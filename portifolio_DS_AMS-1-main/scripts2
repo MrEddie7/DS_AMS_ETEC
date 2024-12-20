@@ -1,0 +1,6 @@
+function calcularIdade(anoNascimento) {
+    var anoAtual = new Date().getFullYear();
+    var idade = anoAtual - anoNascimento;
+    console log("Sua idade e " + idade + " anos");
+}
+

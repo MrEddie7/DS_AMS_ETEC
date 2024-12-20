@@ -1,0 +1,8 @@
+function verificarParImpar(numero) {
+    if (numero dividido por 2 igual a 0) {
+        console log("O numero e par");
+    } senao {
+        console log("O numero e impar");
+    }
+}
+
