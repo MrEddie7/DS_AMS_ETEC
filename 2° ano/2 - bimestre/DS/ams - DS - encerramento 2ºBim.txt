@@ -1,0 +1,16 @@
+
+DATA LIMITE PARA (RE)ENTREGA DAS TAREFAS REFERENTES AO 2º BIMESTRE: 26 DE JUNHO (QUINTA-FEIRA) 
+
+	lista 4	==> 03/abr ==> classe modelagem ("Oi eu existo" e "Pessoa")
+ 	lista 5	==> 17/abr ==> classe modelagem ("Caixa" e "Calculadora")
+	lista 6	==> 14/mai ==> inter graf - exerc aulas 1-2-3 (formulário "Mini Calculadora")
+	lista 7	==> 28/mai ==> inter graf - exerc aulas 4-5-6 (formulário "DadosPessoais")
+	lista 8	==> 05/jun ==> inter graf - formulários ("passagem dados entre formulários")
+	
+
+OBSERVAÇÃO: Entregas somente "presencial" e "na respectiva aula"!
+ 
+
+
+
+

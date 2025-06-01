@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu de Opções</title>
+    <link rel="stylesheet" href="menu.css">
+</head>
+<body>
+    <div class="menu-container">
+        <h1>Menu de Opções</h1>
+        <button onclick="fetchData('alunos')">Exibir Alunos</button>
+        <button onclick="fetchData('cursos')">Exibir Cursos</button>
+        <button onclick="fetchData('disciplinas')">Exibir Disciplinas</button>
+        <button onclick="fetchData('professores')">Exibir Professores</button>
+        <button onclick="fetchData('turmas')">Exibir Turmas</button>
+        <div id="data-container"></div>
+    </div>
+    <script src="menu.js"></script>
+</body>
+</html>

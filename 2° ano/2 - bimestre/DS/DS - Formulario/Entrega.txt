@@ -1,0 +1,8 @@
+
+- data da entrega: 05 de junho (quinta-feira)
+
+- entregar "todo o projeto" compactado
+
+--- não precisa implementar "classe de modelagem"
+
+--- seguir o passo a passo do arquivo na sequência

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form name="form1" action="dadosex1.php" method="POST">
+        <fieldset style="width: 40%;">
+
+            <legend>
+                Dados Pessoais
+            </legend>
+
+             Nome <input type="text" name="Text" size="50"><br>
+             Telefone <input type="text" name="numero" size="20" maxlength="14">
+             RG <input type="text" name="RG" size="14" maxlength="15">
+         </fieldset>
+         <br>
+         <fieldset style="width: 40%;">
+            <legend>
+                Opções
+            </legend>
+            <input type="submit" value="Enviar">
+            <input type="reset"  value="Limpar">
+         </fieldset>
+         <br>
+         <fieldset style="width: 40;">
+            <legend>
+                Dados Escolares
+            </legend>
+            Curso <select name="cbocursos">
+                <option value="Escolha">Escolha</option>
+                <option value="informatica">Informatica</option>
+                <option value="administracao">administracao</option>
+                <option value="Enfermagem">Enfermagem</option>
+                <option value="Alimentos">Alimentos</option>
+            </select><br>
+            Modulo <input type="text" name="txtmod" size="10">
+                 </fieldset>
+    </form>
+</body>
+</html>
