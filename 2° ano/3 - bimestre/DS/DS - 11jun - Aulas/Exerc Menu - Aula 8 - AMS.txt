@@ -1,0 +1,27 @@
+Desenvolver um aplicativo que contenha:
+
+- menu: Operações, Sobre, Sair => (JMenu)
+
+--- opção "Operações": somar, dividir, multiplicar e subtrair => (JMenuItem)
+------- cada opção acima citada abrirá uma janela permitindo o cálculo da operação específica e botão limpar.
+
+--- opção "sobre": abrirá uma janela com seu nome completo, turma e data do dia da entrega.
+
+--- opção "sair": perguntará se quer sair ou não.
+
+Incluir:::
+
+- barra de ferramentas com os botões: "somar, dividir, multiplicar, subtrair e sair" , onde cada botão de cálculo abrirá o formulário respectivo e o botão "sair" fechará o aplicativo
+
+- menu PopUp com opções: sair e sobre, onde cada opção executará a ação respectiva
+
+-- Trabalhar com janelas secundárias "modal" para cada formulário "interno"
+
+
+Data da entrega: 26 de junho
+
+Obs: Entregar o projeto "compactado"
+
+
+
+

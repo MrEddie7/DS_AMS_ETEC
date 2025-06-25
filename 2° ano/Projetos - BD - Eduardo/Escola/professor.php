@@ -7,15 +7,17 @@
 </head>
 <body>
     <div class="container">
-        <h1>Relação de Cursos Cadastrados</h1>
+        <h1>Relação de Professores Cadastrados</h1>
         <table>
             <thead>
                 <tr>
                     <th>Código</th>
                     <th>Nome</th>
-                    <th>Disciplina 1</th>
-                    <th>Disciplina 2</th>
-                    <th>Disciplina 3</th>
+                    <th>Endereço</th>
+                    <th>Cidade</th>
+                    <th>Disciplina</th>
+                    <th>Curso</th>
+                    
                 </tr>
             </thead>
             <tbody>

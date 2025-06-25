@@ -1,6 +1,4 @@
-CREATE DATABASE bd_escola;
 
-USE bd_escola;
 
 
 --
@@ -91,62 +89,6 @@ INSERT INTO `disciplinas` (`CodDisciplina`, `NomeDisciplina`) VALUES
 ('22', 'Manutenção de software'),
 ('18', 'Introdução digital'),
 ('99', 'Marketing');
-
--- --------------------------------------------------------
-
-CREATE TABLE `professores` (
-  `CodProfessor` char(2) NOT NULL,
-  `Nome` varchar(30) NOT NULL,
-  `Endereco` varchar(50) NOT NULL,
-  `Cidade` varchar(30) NOT NULL,
-  `CodDisciplina` char(2) NOT NULL,
-  `CodCurso` char(2) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
-
-INSERT INTO `professores` (`CodProfessor`, `Nome`, `Endereco`, `Cidade`, `CodDisciplina`, `CodCurso`) VALUES
-('01', 'Carlos', 'Rua das Flores 123', 'Sao Paulo', '07', '33'),
-('02', 'Ana', 'Avenida Brasil 456', 'Rio de Janeiro', '20', '10'),
-('03', 'Lucas', 'Rua do Sol 789', 'Belo Horizonte', '26', '27'),
-('04', 'Fernanda', 'Rua do Lago 1011', 'Curitiba', '18', '11'),
-('05', 'Paulo', 'Avenida dos Ipês 1213', 'Porto Alegre', '99', '33'),
-('06', 'Tatiane', 'Rua do Comércio 1415', 'Salvador', '09', '10'),
-('07', 'Ricardo', 'Avenida das Estrelas 1617', 'Fortaleza', '22', '27'),
-('08', 'Eduardo', 'Rua do Saber 1819', 'Brasilia', '29', '11'),
-('09', 'Isabela', 'Rua da Alegria 2021', 'Recife', '07', '33'),
-('10', 'Gustavo', 'Avenida Rio 2223', 'Campinas', '20', '10'),
-('11', 'Carla', 'Rua do Tesouro 2425', 'Sao Paulo', '18', '27'),
-('12', 'André', 'Rua da Paz 2627', 'Sao Paulo', '26', '11'),
-('13', 'Edna', 'Rua dos Campos 2829', 'Sao Paulo', '27', '11'),
-('14', 'Rodrigo', 'Avenida Brasil 3031', 'Rio de Janeiro', '22', '10'),
-('15', 'Beatriz', 'Rua do Futuro 3233', 'Recife', '29', '27'),
-('16', 'Lucas', 'Rua da Programacao 3435', 'Sao Paulo', '07', '11'),
-('17', 'Roger', 'Rua da Discórdia 3637', 'Sao Paulo', '20', '33'),
-('18', 'Julia', 'Rua dos Ventos 3839', 'Belo Horizonte', '26', '10'),
-('19', 'Maria', 'Rua do Céu 4041', 'Porto Alegre', '18', '27'),
-('20', 'Carlos', 'Avenida Brasil 4243', 'Sao Paulo', '99', '11'),
-('21', 'Fernanda', 'Rua do Sol 4445', 'Rio de Janeiro', '09', '33'),
-('22', 'Paulo', 'Rua do Comércio 4647', 'Sao Paulo', '22', '10'),
-('23', 'Tatiane', 'Avenida dos Ipês 4849', 'Salvador', '29', '27'),
-('24', 'Ricardo', 'Rua da Alegria 5051', 'Recife', '07', '11'),
-('25', 'Eduardo', 'Rua do Saber 5253', 'Brasilia', '20', '33'),
-('26', 'Isabela', 'Rua da Paz 5455', 'Fortaleza', '18', '10'),
-('27', 'Gustavo', 'Avenida Rio 5657', 'Campinas', '99', '27'),
-('28', 'Carla', 'Rua do Tesouro 5859', 'Sao Paulo', '09', '11'),
-('29', 'André', 'Rua dos Campos 6061', 'Sao Paulo', '22', '33'),
-('30', 'Beatriz', 'Rua do Futuro 6263', 'Recife', '29', '10');
-
--- --------------------------------------------------------
-
-CREATE TABLE `turmas` (
-  `CodTurma` char(2) NOT NULL,
-  `CodDisciplina` char(2) NOT NULL,
-  `CodCurso` char(2) NOT NULL,
-  `CodProfessor` char(2) NOT NULL,
-  `Ano` int(4) NOT NULL,
-  `Semestre` int(1) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
-
-
 
 --
 -- Índices para tabelas despejadas
