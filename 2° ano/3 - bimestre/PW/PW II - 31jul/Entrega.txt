@@ -1,0 +1,11 @@
+
+- Entrega dia 14 de agosto
+
+
+ - Através do menu de opções, executar as opções "Cadastrar Produtos", "Cadastrar Alunos", "Cadastrar Cursos" e "Cadastrar Disciplinas", 
+onde através da rotina "listar" teremos acesso a "todos os registros" cadastrados em cada tabela.
+
+- Entregar compactado os dois projetos: 
+	-- Projeto Produto 
+	-- Projeto Escola
+

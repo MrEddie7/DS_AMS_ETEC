@@ -1,0 +1,7 @@
+
+-- Data de entrega: 20 de agosto
+
+-- projeto compactado
+
+-- Não esquecer da pasta BD contendo o código do banco e o driver de conexão
+
