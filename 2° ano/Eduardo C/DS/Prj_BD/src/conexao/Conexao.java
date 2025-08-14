@@ -10,7 +10,7 @@ public class Conexao {
     final private String url = "jdbc:mysql://localhost/clientes";
     final private String usuario = "root";
     final private String senha = ""; //465877 db casa
-    private Connection conexao;
+    public Connection conexao;
     public Statement statement;
     public ResultSet resultset;
     
@@ -21,7 +21,7 @@ public class Conexao {
        try{
        Class.forName(driver);
        conexao = DriverManager.getConnection(url,usuario,senha);
-       JOptionPane.showInternalMessageDialog(null, "conexao confirmada",  "Mensagem do Programa", JOptionPane.INFORMATION_MESSAGE);
+      
        }catch (ClassNotFoundException Driver){
        JOptionPane.showMessageDialog(null, "Driver não encontrado"+Driver, "Mensagem do Sistema", JOptionPane.INFORMATION_MESSAGE);
        result = false;
@@ -40,7 +40,7 @@ public class Conexao {
     
         try{
         conexao.close();
-         JOptionPane.showInternalMessageDialog(null, "conexao Fechada",  "Mensagem do Sistema", JOptionPane.INFORMATION_MESSAGE);
+         
         } catch (SQLException fecha){
         JOptionPane.showInternalMessageDialog(null, "Erro ao fechar Conexão",  "Mensagem do Sistema", JOptionPane.INFORMATION_MESSAGE);
         }

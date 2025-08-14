@@ -1,3 +1,5 @@
+/* Arquivo único de estilos para toda a pasta Escola */
+
 /* Reset básico */
 * {
     box-sizing: border-box;
@@ -22,7 +24,7 @@ body {
 }
 
 h1, h2 {
-    color: #219150;
+    color: #007BFF;
     margin-bottom: 24px;
     font-weight: 700;
     text-align: center;
@@ -44,7 +46,7 @@ table th, table td {
 }
 
 table th {
-    background: #219150;
+    background: #007BFF;
     color: #fff;
     font-size: 1.05em;
     letter-spacing: 0.5px;
@@ -55,13 +57,13 @@ table tr:nth-child(even) {
 }
 
 table tr:hover {
-    background-color: #f1f1f1;
+    background-color: #e3f0ff;
 }
 
 .btn, .btn-voltar {
     display: inline-block;
     padding: 10px 24px;
-    background: #219150;
+    background: #007BFF;
     color: #fff;
     text-decoration: none;
     border-radius: 6px;
@@ -73,7 +75,7 @@ table tr:hover {
 }
 
 .btn:hover, .btn-voltar:hover {
-    background: #176d37;
+    background: #0056b3;
 }
 
 .form-group {
@@ -85,29 +87,26 @@ label {
     display: block;
     margin-bottom: 6px;
     font-weight: 500;
-    color: #219150;
+    color: #007BFF;
 }
 
 input[type="text"], input[type="email"], input[type="number"], select {
     width: 100%;
     padding: 12px;
     margin-bottom: 12px;
-    border: 1px solid #219150;
+    border: 1px solid #007BFF;
     border-radius: 6px;
     font-size: 1em;
-    background: #f8fbff;
-    transition: border 0.2s, box-shadow 0.2s;
-    box-sizing: border-box;
+    outline: none;
+    transition: border 0.2s;
 }
 
 input[type="text"]:focus, input[type="email"]:focus, input[type="number"]:focus, select:focus {
-    border-color: #176d37;
-    box-shadow: 0 0 4px #21915033;
-    outline: none;
+    border-color: #0056b3;
 }
 
 button[type="submit"] {
-    background-color: #219150;
+    background-color: #007BFF;
     color: white;
     border: none;
     border-radius: 6px;
@@ -116,11 +115,10 @@ button[type="submit"] {
     cursor: pointer;
     margin-top: 10px;
     transition: background 0.2s;
-    width: 100%;
 }
 
 button[type="submit"]:hover {
-    background-color: #176d37;
+    background: #0056b3;
 }
 
 .menu-container {
@@ -178,133 +176,102 @@ button[type="submit"]:hover {
 }
 
 .menu-container button[type="submit"]:hover {
-    background-color: #0056b3;
+    background: #0056b3;
 }
 
 .menu-container p {
-    color: #28a745;
-    font-weight: bold;
-    margin-bottom: 15px;
+    color: #007BFF;
+    font-weight: 500;
+    margin-bottom: 12px;
 }
 
 .btn-voltar {
-    display: inline-block;
-    margin-top: 10px;
-    padding: 10px 20px;
-    background-color: #007BFF;
-    color: white;
+    background: #007BFF;
+    color: #fff;
+    border-radius: 6px;
+    padding: 10px 24px;
     text-decoration: none;
-    border-radius: 5px;
     font-size: 1em;
+    border: none;
+    cursor: pointer;
     transition: background 0.2s;
+    margin: 6px 2px;
 }
 
 .btn-voltar:hover {
-    background-color: #0056b3;
+    background: #0056b3;
 }
 
 button {
-    margin: 10px;
-    padding: 10px 20px;
-    font-size: 16px;
-    cursor: pointer;
-    background-color: #007BFF;
-    color: white;
+    background: #007BFF;
+    color: #fff;
+    border-radius: 6px;
     border: none;
-    border-radius: 5px;
+    padding: 10px 24px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background 0.2s;
 }
 
 button:hover {
-    background-color: #0056b3;
+    background: #0056b3;
 }
 
 #data-container {
-    margin-top: 20px;
-    padding: 10px;
-    background-color: white;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    max-width: 800px;
-    margin-left: auto;
-    margin-right: auto;
-    text-align: left;
+    margin-top: 24px;
 }
 
 th, td {
-    border: 1px solid #ddd;
-    padding: 8px;
-    text-align: left;
+    font-size: 1em;
 }
 
 th {
-    background-color: #007BFF;
-    color: white;
+    color: #fff;
+    background: #007BFF;
 }
 
 .button-boxing {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 15px;
-    padding: 25px 20px;
-    background: #e3f0ff;
-    border: 2px solid #007BFF;
-    border-radius: 12px;
-    margin: 30px auto;
-    max-width: 520px;
-    box-shadow: 0 4px 12px rgba(0,123,255,0.08);
+    margin-top: 24px;
 }
 
 .boxing-title {
-    font-size: 1.3em;
-    font-weight: bold;
     color: #007BFF;
-    margin-bottom: 10px;
-    letter-spacing: 1px;
+    font-size: 1.2em;
+    font-weight: 600;
+    margin-bottom: 12px;
 }
 
 .boxing-buttons {
     display: flex;
-    gap: 15px;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
 }
 
 .btn-cadastrar button {
-    background-color: #28a745;
-    color: white;
+    background: #007BFF;
+    color: #fff;
+    border-radius: 6px;
     border: none;
-    border-radius: 5px;
-    padding: 10px 20px;
-    font-size: 16px;
+    padding: 10px 24px;
+    font-size: 1em;
     cursor: pointer;
-    margin-left: 10px;
+    transition: background 0.2s;
 }
 
 .btn-cadastrar button:hover {
-    background-color: #218838;
+    background: #0056b3;
 }
 
 @media (max-width: 600px) {
-    .container {
-        padding: 16px 6px;
+    .container, .menu-container {
+        padding: 16px 8px;
     }
     table th, table td {
         padding: 8px 4px;
-        font-size: 0.95em;
-    }
-    .form-actions {
-        flex-direction: column;
-        gap: 8px;
-        align-items: stretch;
-    }
-    .menu-container {
-        padding: 16px 6px;
-    }
-    table th, table td {
-        padding: 8px 4px;
-        font-size: 0.95em;
     }
     .button-boxing {
-        padding: 12px 6px;
-        max-width: 100%;
+        flex-direction: column;
+        gap: 8px;
     }
 }

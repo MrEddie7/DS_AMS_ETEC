@@ -7,37 +7,35 @@
 </head>
 <body>
     <div class="container">
-        <h1>Area de Cdastro dos Produtos</h1>
+        <h1>Área de Cadastro dos Produtos</h1>
         <form name="cliente" method="post" action="">
-            <fieldset id="a">
+            <fieldset>
                 <legend><b>Dados do Produto</b></legend>
-                <p>Nome: <input name="txtnome" type="type" size="40" maxlength="40" placeholder="Nome do Produto"></p>
-                <p>Estoque: <input name="txtestoq" type="text" size="10" placeholder="0"></p>
+                <div class="form-group">
+                    <label for="txtnome">Nome:</label>
+                    <input id="txtnome" name="txtnome" type="text" maxlength="40" placeholder="Nome do Produto">
+                </div>
+                <div class="form-group">
+                    <label for="txtestoq">Estoque:</label>
+                    <input id="txtestoq" name="txtestoq" type="number" min="0" placeholder="0">
+                </div>
             </fieldset>
-            <br>
-            <fieldset id="b">
-                <legend><b>Opções:</b></legend>
-                <br>
-                <input name="btnenviar" type="submit" value="Cadastrar"> &nbsp;&nbsp;
-                <input name="limpar" type="reset" value="Limpar">
-
-            </fieldset>
+            <div class="form-actions">
+                <button type="submit" name="btnenviar" class="btn">Cadastrar</button>
+                <button type="reset" class="btn-voltar">Limpar</button>
+                <a href="menu.html" class="btn-voltar">Voltar</a>
+            </div>
         </form>
         <?php
         extract($_POST, EXTR_OVERWRITE);
         if (isset($btnenviar)) {
             include_once 'Produtos.php';
-            $pro=new Produto();
+            $pro = new Produto();
             $pro->setNome($txtnome);
             $pro->setEstoque($txtestoq);
-            echo "<h3><br><br>" . $pro->salvar() . "</hr>";
+            echo "<h3><br><br>" . $pro->salvar() . "</h3>";
         }
         ?>
-        <br>
-        <center>
-            <button>
-                <a href = "menu.html">Voltar</a>
-            </button>
-            
+    </div>
 </body>
 </html>
