@@ -1,0 +1,171 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+.menu-container {
+    max-width: 500px;
+    margin: 40px auto;
+    padding: 30px 25px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0,123,255,0.10);
+    text-align: center;
+}
+
+.menu-container h1 {
+    color: #007BFF;
+    margin-bottom: 25px;
+    font-size: 2em;
+    letter-spacing: 1px;
+}
+
+.menu-container form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    margin-bottom: 20px;
+}
+
+.menu-container select,
+.menu-container input[type="text"],
+.menu-container input[type="email"],
+.menu-container input[type="number"] {
+    padding: 10px;
+    border: 1px solid #007BFF;
+    border-radius: 5px;
+    font-size: 1em;
+    margin-bottom: 8px;
+    outline: none;
+    transition: border 0.2s;
+}
+
+.menu-container select:focus,
+.menu-container input:focus {
+    border-color: #0056b3;
+}
+
+.menu-container button[type="submit"] {
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 12px 0;
+    font-size: 1.1em;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background 0.2s;
+}
+
+.menu-container button[type="submit"]:hover {
+    background-color: #0056b3;
+}
+
+.menu-container p {
+    color: #28a745;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.btn-voltar {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 10px 20px;
+    background-color: #007BFF;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 1em;
+    transition: background 0.2s;
+}
+
+.btn-voltar:hover {
+    background-color: #0056b3;
+}
+
+button {
+    margin: 10px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+#data-container {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: left;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+th {
+    background-color: #007BFF;
+    color: white;
+}
+
+.button-boxing {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    padding: 25px 20px;
+    background: #e3f0ff;
+    border: 2px solid #007BFF;
+    border-radius: 12px;
+    margin: 30px auto;
+    max-width: 520px;
+    box-shadow: 0 4px 12px rgba(0,123,255,0.08);
+}
+
+.boxing-title {
+    font-size: 1.3em;
+    font-weight: bold;
+    color: #007BFF;
+    margin-bottom: 10px;
+    letter-spacing: 1px;
+}
+
+.boxing-buttons {
+    display: flex;
+    gap: 15px;
+}
+
+.btn-cadastrar button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+.btn-cadastrar button:hover {
+    background-color: #218838;
+}

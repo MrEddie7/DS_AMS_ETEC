@@ -1,0 +1,310 @@
+/* Reset básico */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Arial', 'Century Gothic', sans-serif;
+    background: linear-gradient(135deg, #e0f7fa 0%, #f4f4f4 100%);
+    min-height: 100vh;
+    color: #333;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 32px auto;
+    background: #fff;
+    padding: 32px 24px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    border-radius: 12px;
+}
+
+h1, h2 {
+    color: #219150;
+    margin-bottom: 24px;
+    font-weight: 700;
+    text-align: center;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 24px;
+    background: #fafafa;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+table th, table td {
+    padding: 14px 10px;
+    border-bottom: 1px solid #e0e0e0;
+    text-align: left;
+}
+
+table th {
+    background: #219150;
+    color: #fff;
+    font-size: 1.05em;
+    letter-spacing: 0.5px;
+}
+
+table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+table tr:hover {
+    background-color: #f1f1f1;
+}
+
+.btn, .btn-voltar {
+    display: inline-block;
+    padding: 10px 24px;
+    background: #219150;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 1em;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s;
+    margin: 6px 2px;
+}
+
+.btn:hover, .btn-voltar:hover {
+    background: #176d37;
+}
+
+.form-group {
+    margin-bottom: 18px;
+    text-align: left;
+}
+
+label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 500;
+    color: #219150;
+}
+
+input[type="text"], input[type="email"], input[type="number"], select {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 12px;
+    border: 1px solid #219150;
+    border-radius: 6px;
+    font-size: 1em;
+    background: #f8fbff;
+    transition: border 0.2s, box-shadow 0.2s;
+    box-sizing: border-box;
+}
+
+input[type="text"]:focus, input[type="email"]:focus, input[type="number"]:focus, select:focus {
+    border-color: #176d37;
+    box-shadow: 0 0 4px #21915033;
+    outline: none;
+}
+
+button[type="submit"] {
+    background-color: #219150;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 12px 0;
+    font-size: 1.1em;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background 0.2s;
+    width: 100%;
+}
+
+button[type="submit"]:hover {
+    background-color: #176d37;
+}
+
+.menu-container {
+    max-width: 500px;
+    margin: 40px auto;
+    padding: 30px 25px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0,123,255,0.10);
+    text-align: center;
+}
+
+.menu-container h1 {
+    color: #007BFF;
+    margin-bottom: 25px;
+    font-size: 2em;
+    letter-spacing: 1px;
+}
+
+.menu-container form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    margin-bottom: 20px;
+}
+
+.menu-container select,
+.menu-container input[type="text"],
+.menu-container input[type="email"],
+.menu-container input[type="number"] {
+    padding: 10px;
+    border: 1px solid #007BFF;
+    border-radius: 5px;
+    font-size: 1em;
+    margin-bottom: 8px;
+    outline: none;
+    transition: border 0.2s;
+}
+
+.menu-container select:focus,
+.menu-container input:focus {
+    border-color: #0056b3;
+}
+
+.menu-container button[type="submit"] {
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 12px 0;
+    font-size: 1.1em;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background 0.2s;
+}
+
+.menu-container button[type="submit"]:hover {
+    background-color: #0056b3;
+}
+
+.menu-container p {
+    color: #28a745;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.btn-voltar {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 10px 20px;
+    background-color: #007BFF;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 1em;
+    transition: background 0.2s;
+}
+
+.btn-voltar:hover {
+    background-color: #0056b3;
+}
+
+button {
+    margin: 10px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+#data-container {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: left;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+th {
+    background-color: #007BFF;
+    color: white;
+}
+
+.button-boxing {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    padding: 25px 20px;
+    background: #e3f0ff;
+    border: 2px solid #007BFF;
+    border-radius: 12px;
+    margin: 30px auto;
+    max-width: 520px;
+    box-shadow: 0 4px 12px rgba(0,123,255,0.08);
+}
+
+.boxing-title {
+    font-size: 1.3em;
+    font-weight: bold;
+    color: #007BFF;
+    margin-bottom: 10px;
+    letter-spacing: 1px;
+}
+
+.boxing-buttons {
+    display: flex;
+    gap: 15px;
+}
+
+.btn-cadastrar button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+.btn-cadastrar button:hover {
+    background-color: #218838;
+}
+
+@media (max-width: 600px) {
+    .container {
+        padding: 16px 6px;
+    }
+    table th, table td {
+        padding: 8px 4px;
+        font-size: 0.95em;
+    }
+    .form-actions {
+        flex-direction: column;
+        gap: 8px;
+        align-items: stretch;
+    }
+    .menu-container {
+        padding: 16px 6px;
+    }
+    table th, table td {
+        padding: 8px 4px;
+        font-size: 0.95em;
+    }
+    .button-boxing {
+        padding: 12px 6px;
+        max-width: 100%;
+    }
+}

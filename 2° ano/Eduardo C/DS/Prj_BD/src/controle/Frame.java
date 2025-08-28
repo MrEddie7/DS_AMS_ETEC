@@ -78,8 +78,9 @@ public class Frame extends JFrame {
         // config jtable
         tblClientes = new javax.swing.JTable();
         scp_tabela = new javax.swing.JScrollPane();
-        tblClientes.setBounds(50, 280, 650, 200);
-        scp_tabela.setBounds(50, 280, 650, 200);
+        tblClientes.setBounds(50, 280, 780, 250);
+        scp_tabela.setBounds(50, 280, 780, 250);
+
         tela.add(scp_tabela);
         tblClientes.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0,0,0)));
         tblClientes.setFont(new java.awt.Font("Arial", 1, 12));
@@ -104,7 +105,7 @@ public class Frame extends JFrame {
                 salvarCliente();
             }
         });
-
+        
         btnPrimeiro = new JButton("Primeiro");
         btnAnterior = new JButton("Anterior");
         btnProximo = new JButton("Próximo");
@@ -113,25 +114,37 @@ public class Frame extends JFrame {
         btnGravar = new JButton("Gravar");
         btnAlterar = new JButton("Alterar");
         btnExcluir = new JButton("Excluir");
-        btnPesquisar = new JButton("Pesquisar");
+        btnPesquisar = new JButton("Pesquisar"); 
         btnSair = new JButton("Sair");
-        tPesquisar = new JTextField();
+        tPesquisar = new JTextField();           
+          
 
-        btnPrimeiro.setBounds(50, 500, 90, 30);
-        btnAnterior.setBounds(150, 500, 90, 30);
-        btnProximo.setBounds(250, 500, 90, 30);
-        btnUltimo.setBounds(350, 500, 90, 30);
-        btnNovo.setBounds(450, 500, 120, 30);
-        btnGravar.setBounds(580, 500, 90, 30);
-        btnAlterar.setBounds(680, 500, 90, 30);
-        btnExcluir.setBounds(50, 540, 90, 30);
-        btnPesquisar.setBounds(680, 230, 90, 30);
-        tPesquisar.setBounds(500, 230, 170, 30);
-        btnSair.setBounds(680, 540, 90, 30);
 
-        tela.add(btnPrimeiro); tela.add(btnAnterior); tela.add(btnProximo); tela.add(btnUltimo);
-        tela.add(btnNovo); tela.add(btnGravar); tela.add(btnAlterar); tela.add(btnExcluir);
-        tela.add(tPesquisar); tela.add(btnPesquisar); tela.add(btnSair);
+       // Navegação
+       
+        btnPrimeiro.setBounds(50, 550, 110, 30);
+        btnAnterior.setBounds(170, 550, 110, 30);
+        btnProximo.setBounds(50, 590, 110, 30);
+        btnUltimo.setBounds(170, 590, 110, 30);
+
+        // Ações principais
+        btnNovo.setBounds(300, 550, 130, 30);
+        btnGravar.setBounds(440, 550, 130, 30);
+        btnAlterar.setBounds(300, 590, 130, 30);
+        btnExcluir.setBounds(440, 590, 130, 30);
+
+        // Botão sair mais abaixo
+        btnSair.setBounds(720, 570, 110, 30);
+
+        // Adiciona ao painel
+        tela.add(btnPrimeiro); tela.add(btnAnterior);
+        tela.add(btnProximo); tela.add(btnUltimo);
+        tela.add(btnNovo); tela.add(btnGravar);
+        tela.add(btnAlterar); tela.add(btnExcluir);
+        tela.add(tPesquisar); tela.add(btnPesquisar);
+        tela.add(btnSair);
+
+       
 
         btnPrimeiro.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent e) {

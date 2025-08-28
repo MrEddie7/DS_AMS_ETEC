@@ -1,0 +1,15 @@
+
+- Entrega dia 04 de setembro
+
+ - Através do menu de opções, executar as opções:
+-----  "Excluir Produtos", "Excluir Alunos", "Excluir Cursos" e "Excluir Disciplinas".
+-----  "Pesquisar Produtos", "Pesquisar Alunos", "Pesquisar Cursos" e "Pesquisar Disciplinas".
+
+- Através da rotina "listar" teremos acesso a "todos os registros" exluidos e pesquisados em cada tabela.
+
+
+
+- Entregar compactado os dois projetos: 
+	-- Projeto Produto 
+	-- Projeto Escola
+

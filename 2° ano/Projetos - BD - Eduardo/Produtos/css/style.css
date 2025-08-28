@@ -1,5 +1,15 @@
 /* Arquivo único de estilos para toda a pasta Produtos */
 
+/* Variáveis de cor e fonte */
+:root {
+    --primary-color: #2a9d8f;
+    --secondary-color: #e9c46a;
+    --bg-color: #f4f4f4;
+    --card-bg: #fff;
+    --border-radius: 12px;
+    --font-family: 'Segoe UI', Arial, sans-serif;
+}
+
 /* Reset básico */
 * {
     box-sizing: border-box;
@@ -8,15 +18,16 @@
 }
 
 body {
-    font-family: 'Arial', 'Century Gothic', sans-serif;
+    font-family: 'Segoe UI', 'Arial', sans-serif;
     background: linear-gradient(135deg, #e0f7fa 0%, #f4f4f4 100%);
     min-height: 100vh;
     color: #333;
+    text-align: center;
 }
 
 .container {
-    max-width: 1200px;
-    margin: 32px auto;
+    max-width: 900px;
+    margin: 100px auto 32px auto;
     background: #fff;
     padding: 32px 24px;
     box-shadow: 0 4px 24px rgba(0,0,0,0.08);
@@ -192,28 +203,202 @@ th {
     background-color: #218838;
 }
 
+/* Grid de produtos */
+.produtos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 2rem;
+    padding: 2rem;
+}
+
+/* Card de produto */
+.produto-card {
+    background: var(--card-bg);
+    border-radius: var(--border-radius);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    padding: 1.5rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.produto-card:hover {
+    transform: translateY(-5px) scale(1.03);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+}
+
+.produto-img {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin-bottom: 1rem;
+    border: 2px solid var(--primary-color);
+}
+
+.produto-nome {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--primary-color);
+}
+
+.produto-preco {
+    font-size: 1rem;
+    color: var(--secondary-color);
+    margin-bottom: 1rem;
+}
+
+.produto-descricao {
+    font-size: 0.95rem;
+    color: #555;
+    text-align: center;
+}
+
+/* Botões de ação nos cards */
+.produto-card .acoes {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.produto-card .btn-editar,
+.produto-card .btn-excluir {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 5px;
+    font-size: 0.95em;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.produto-card .btn-editar {
+    background-color: #ffc107;
+    color: #333;
+}
+
+.produto-card .btn-editar:hover {
+    background-color: #e0a800;
+}
+
+/* Tabelas */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 24px;
+    background: #fafafa;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+table th, table td {
+    padding: 14px 10px;
+    border-bottom: 1px solid #e0e0e0;
+    text-align: center;
+}
+
+table th {
+    background: #219150;
+    color: #fff;
+    font-size: 1.05em;
+    letter-spacing: 0.5px;
+}
+
+table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+table tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* Botões gerais */
+.btn, .btn-voltar {
+    display: inline-block;
+    padding: 10px 24px;
+    background: #219150;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 1em;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s;
+    margin: 6px 2px;
+    text-align: center;
+}
+
+.btn:hover, .btn-voltar:hover {
+    background: #176d37;
+}
+
+/* Grupos de formulário */
+.form-group {
+    margin-bottom: 18px;
+    text-align: center;
+}
+
+label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 500;
+    color: #219150;
+    text-align: center;
+}
+
+input[type="text"], input[type="email"], input[type="number"], select {
+    width: 80%;
+    padding: 12px;
+    margin-bottom: 12px;
+    border: 1px solid #219150;
+    border-radius: 6px;
+    font-size: 1em;
+    background: #f8fbff;
+    transition: border 0.2s, box-shadow 0.2s;
+    box-sizing: border-box;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+}
+
+input[type="text"]:focus, input[type="email"]:focus, input[type="number"]:focus, select:focus {
+    border-color: #176d37;
+    box-shadow: 0 0 4px #21915033;
+    outline: none;
+}
+
+button[type="submit"] {
+    background-color: #219150;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 12px 0;
+    font-size: 1.1em;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background 0.2s;
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+}
+
+button[type="submit"]:hover {
+    background-color: #176d37;
+}
+
+/* Responsivo */
 @media (max-width: 600px) {
     .container {
         padding: 16px 6px;
+        margin-top: 80px;
     }
     table th, table td {
         padding: 8px 4px;
         font-size: 0.95em;
     }
-    .form-actions {
-        flex-direction: column;
-        gap: 8px;
-        align-items: stretch;
-    }
-    .menu-container {
-        padding: 16px 6px;
-    }
-    table th, table td {
-        padding: 8px 4px;
-        font-size: 0.95em;
-    }
-    .button-boxing {
-        padding: 12px 6px;
-        max-width: 100%;
+    input[type="text"], input[type="email"], input[type="number"], select, button[type="submit"] {
+        width: 100%;
     }
 }
