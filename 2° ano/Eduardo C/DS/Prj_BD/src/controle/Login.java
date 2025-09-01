@@ -10,14 +10,14 @@ import javax.swing.JOptionPane;
 import javax.sql.*;
 
 public class Login extends JFrame {
-    
+
     Conexao con_cliente;
-    
     JPasswordField tsen;
     JLabel rusu,rsen,rtit;
     JTextField tusu;
     JButton blogar;
-    
+    int tentativas = 0; // contador de tentativas
+
     public Login(){
     
     con_cliente = new Conexao();
@@ -79,15 +79,26 @@ public class Login extends JFrame {
             String usuario = tusu.getText();
             String senha = new String(tsen.getPassword());
             try {
-                String sql = "SELECT * FROM usuarios WHERE usuario='" + usuario + "' AND senha='" + senha + "'";
-                con_cliente.ExecutarSQL(sql);
-                if (con_cliente.resultset.next()) {
-                    JOptionPane.showMessageDialog(null, "Login realizado com sucesso!");
-                    dispose(); // Fecha o frame de login
-                    Frame principal = new Frame();
-                    principal.setVisible(true);
-                } else {
-                    JOptionPane.showMessageDialog(null, "Usuário ou senha incorretos.");
+                String sql = "SELECT * FROM tblusuario WHERE usuario = ? AND senha = ?";
+                try (java.sql.PreparedStatement pst = con_cliente.conexao.prepareStatement(sql)) {
+                    pst.setString(1, usuario);
+                    pst.setString(2, senha);
+                    java.sql.ResultSet rs = pst.executeQuery();
+                    if (rs.next()) {
+                        JOptionPane.showMessageDialog(null, "Login realizado com sucesso!");
+                        dispose(); // Fecha o frame de login
+                        Frame principal = new Frame();
+                        principal.setVisible(true);
+                    } else {
+                        tentativas++;
+                        if (tentativas >= 3) {
+                            JOptionPane.showMessageDialog(null, "Número de tentativas excedido. O sistema será desligado.");
+                            System.exit(0);
+                        } else {
+                            JOptionPane.showMessageDialog(null, "Usuário ou senha incorretos. Tentativa " + tentativas + " de 3.");
+                        }
+                    }
+                    rs.close();
                 }
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(null, "Erro ao conectar: " + ex.getMessage());

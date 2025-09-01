@@ -56,6 +56,24 @@ class Produto
         }
     }
 
+    public function listarEstoqueMinimo() {
+        $this->conn = new Conectar();
+        $sql = $this->conn->prepare("SELECT * FROM produtos WHERE Estoque < 20");
+        $sql->execute();
+        $result = $sql->fetchAll(PDO::FETCH_ASSOC);
+        $this->conn = null;
+        return $result;
+    }
+
+    public function listarOrdenadoPorNome() {
+        $this->conn = new Conectar();
+        $sql = $this->conn->prepare("SELECT * FROM produtos ORDER BY Nome");
+        $sql->execute();
+        $result = $sql->fetchAll(PDO::FETCH_ASSOC);
+        $this->conn = null;
+        return $result;
+    }
+
     // metodos de salvar produtos
 
     function salvar ()
@@ -116,13 +134,14 @@ class Produto
     function consultar()
     {
         try {
-            $this-> conn = new Conectar();
-            $sql = $this->prepare("select * from produtos where nome like ?");
-            @$sql-> bindParam(1, $this->getNome(), PDO::PARAM_STR);
+            $this->conn = new Conectar();
+            $sql = $this->conn->prepare("select * from produtos where nome like ?");
+            $nomeBusca = "%" . $this->getNome() . "%";
+            $sql->bindParam(1, $nomeBusca, PDO::PARAM_STR);
             $sql->execute();
-            return $sql->fetchAll();
+            $result = $sql->fetchAll(PDO::FETCH_ASSOC);
             $this->conn = null;
-
+            return $result;
         } catch (PDOException $exc) {
             echo "erro ao executar consulta. " . $exc->getMessage();
         }

@@ -20,7 +20,7 @@ public class Frame extends JFrame {
     
     JTable tblClientes;
     JScrollPane scp_tabela;
-    JButton btnSalvar, btnPrimeiro, btnAnterior, btnProximo, btnUltimo, btnNovo, btnGravar, btnAlterar, btnExcluir, btnPesquisar, btnSair;
+    JButton btnSalvar, btnPrimeiro, btnAnterior, btnProximo, btnUltimo, btnNovo, btnGravar, btnAlterar, btnExcluir, btnPesquisar, btnSair, btnCadUser;
     JPanel tela;
     JTextField tPesquisar;
 
@@ -116,11 +116,10 @@ public class Frame extends JFrame {
         btnExcluir = new JButton("Excluir");
         btnPesquisar = new JButton("Pesquisar"); 
         btnSair = new JButton("Sair");
+        btnCadUser = new JButton("Cadastrar Usuário");
         tPesquisar = new JTextField();           
-          
 
-
-       // Navegação
+        // Navegação
        
         btnPrimeiro.setBounds(50, 550, 110, 30);
         btnAnterior.setBounds(170, 550, 110, 30);
@@ -132,6 +131,7 @@ public class Frame extends JFrame {
         btnGravar.setBounds(440, 550, 130, 30);
         btnAlterar.setBounds(300, 590, 130, 30);
         btnExcluir.setBounds(440, 590, 130, 30);
+        btnCadUser.setBounds(720, 530, 150, 30);
 
         // Botão sair mais abaixo
         btnSair.setBounds(720, 570, 110, 30);
@@ -143,6 +143,7 @@ public class Frame extends JFrame {
         tela.add(btnAlterar); tela.add(btnExcluir);
         tela.add(tPesquisar); tela.add(btnPesquisar);
         tela.add(btnSair);
+        tela.add(btnCadUser);
 
        
 
@@ -194,6 +195,12 @@ public class Frame extends JFrame {
         btnSair.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent e) {
                 sair();
+            }
+        });
+        btnCadUser.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+                CadUser cadastro = new CadUser();
+                cadastro.setVisible(true);
             }
         });
 
