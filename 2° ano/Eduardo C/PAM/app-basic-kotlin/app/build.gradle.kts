@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    id("kotlin-kapt")
 }
 
 android {
@@ -37,6 +38,7 @@ android {
     buildFeatures {
         compose = true
     }
+    buildToolsVersion = "35.0.1"
 }
 
 dependencies {
@@ -51,6 +53,10 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.navigation.common.android)
     implementation(libs.androidx.navigation.compose.android)
+    implementation(libs.androidx.room.common.jvm)
+    implementation(libs.androidx.room.runtime.android)
+    implementation("androidx.room:room-ktx:2.8.0")
+    kapt("androidx.room:room-compiler:2.8.0")
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

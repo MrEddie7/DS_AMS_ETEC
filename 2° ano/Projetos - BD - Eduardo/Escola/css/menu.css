@@ -169,3 +169,13 @@ th {
 .btn-cadastrar button:hover {
     background-color: #218838;
 }
+
+/* Escola: azul */
+.button-boxing.escola {
+    background: #e3f0ff;
+    border-color: #007BFF;
+    box-shadow: 0 4px 12px rgba(0,123,255,0.08);
+}
+.button-boxing.escola .boxing-title {
+    color: #007BFF;
+}

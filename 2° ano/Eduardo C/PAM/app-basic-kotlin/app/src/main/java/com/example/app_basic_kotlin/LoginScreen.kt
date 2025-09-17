@@ -1,4 +1,4 @@
-package com.example.appbasickotlin
+package com.example.app_basic_kotlin
 
 import android.widget.Toast
 import androidx.compose.foundation.Image
@@ -22,15 +22,19 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.app_basic_kotlin.R
+import com.example.app_basic_kotlin.data.AppDatabase
+import kotlinx.coroutines.launch
 
 @Composable
 fun LoginScreen(onLogin: (String) -> Unit, onRegisterClick: () -> Unit) {
     var user by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     val context = LocalContext.current
-    val dbHelper = remember { UserDatabaseHelper(context) }
+    val db = AppDatabase.getDatabase(context)
+    val dao = db.userDao()
     var errorMessage by remember { mutableStateOf<String?>(null) }
     var isLoading by remember { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
 
     val gradient = Brush.verticalGradient(
         colors = listOf(
@@ -104,16 +108,14 @@ fun LoginScreen(onLogin: (String) -> Unit, onRegisterClick: () -> Unit) {
                     onClick = {
                         isLoading = true
                         errorMessage = null
-
-                        // Autenticação local (SQLite)
-                        val success = dbHelper.authenticate(user, password)
-                        isLoading = false
-
-                        if (success) {
-                            onLogin(user)
-                        } else {
-                            Toast.makeText(context, "Usuário ou senha inválidos", Toast.LENGTH_SHORT).show()
-                            errorMessage = "Usuário ou senha inválidos"
+                        scope.launch {
+                            val userObj = dao.getUserByUsername(user)
+                            isLoading = false
+                            if (userObj != null && userObj.password == password) {
+                                onLogin(user)
+                            } else {
+                                errorMessage = "Usuário ou senha inválidos"
+                            }
                         }
                     },
                     modifier = Modifier

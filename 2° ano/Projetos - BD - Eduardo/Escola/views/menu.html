@@ -2,22 +2,31 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Menu de Opções</title>
-    <link rel="stylesheet" href="../css/style.css">
+    <title>Menu Principal</title>
+    <link rel="stylesheet" href="../css/menu.css">
 </head>
 <body>
     <div class="menu-container">
-        <h1>Menu de Opções</h1>
+        <h1>Menu Principal</h1>
+
+        
+       
+        <!-- Escola -->
         <div class="button-boxing">
-            <div class="boxing-title">Ações</div>
+            <div class="boxing-title">Escola</div>
             <div class="boxing-buttons">
-                <a href="../views/alunos.php" class="btn-list"><button type="button">Listar Alunos</button></a>
-                <a href="../views/cursos.php" class="btn-list"><button type="button">Listar Cursos</button></a>
-                <a href="../views/disciplinas.php" class="btn-list"><button type="button">Listar Disciplinas</button></a>
-                <a href="../views/professor.php" class="btn-list"><button type="button">Listar Professores</button></a>
-                <a href="../views/turmas.php" class="btn-list"><button type="button">Listar Turmas</button></a>
-                <a href="../controllers/cadastrar.php" class="btn-cadastrar"><button type="button">Ir para Cadastros</button></a>
+                
+                <button onclick="location.href='../controllers/cadastrar.php'">Cadastrar</button>
+                
+                <button onclick="location.href='alunos.php'">Listar Alunos</button>
+                
+                <button onclick="location.href='cursos.php'">Listar Cursos</button>
+                
+                <button onclick="location.href='disciplina.php'">Listar Disciplinas</button>
+                
+                <button onclick="location.href='turmas.php'">Listar Turmas</button>
+
+                <button onclick="location.href='excluir.php'">Excluir/Pesquisar</button>
             </div>
         </div>
     </div>

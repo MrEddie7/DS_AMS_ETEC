@@ -1,0 +1,16 @@
+
+- Entrega dia 25 de setembro
+
+ - Através do menu de opções, executar as opções:
+
+-----  "Alterar Produtos"
+-----  "Alterar Alunos", "Alterar Cursos" e "Alterar Disciplinas".
+
+----- Através da rotina "listar" teremos acesso a "todos os registros" alterados em cada tabela.
+
+
+
+- Entregar compactado os dois projetos: 
+	-- Projeto Produto 
+	-- Projeto Escola
+

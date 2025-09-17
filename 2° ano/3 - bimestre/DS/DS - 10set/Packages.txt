@@ -1,0 +1,16 @@
+
+
+Model
+(para as classes de modelagem)
+
+View
+( para os formulários)
+
+Controler
+(para a classe de conexão)
+
+Imagem
+(para as imagens)
+
+
+

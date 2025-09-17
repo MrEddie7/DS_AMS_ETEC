@@ -1,0 +1,24 @@
+Modelo conceitual:
+
+Um cinema deseja manter o cadastro de seus filmes de maneira fácil,
+ele quer que contenha os dados importantes, como o título, gênero,
+duração, classificação indicativa e sinopse.
+As sessões do cinema também devem ser cadastradas.
+Onde cada sessão está associada a um filme, possui uma data e hora de exibição,
+é realizada em uma sala específica, e possui um preço de ingresso.
+As salas devem ser cadastradas com informações como número da sala,
+capacidade de assentos e tipo da sala (ex: 2D, 3D, IMAX).
+Quando um cliente compra um ingresso, o sistema deve registrar a compra,
+relacionando o cliente, a sessão escolhida, a quantidade de ingressos comprados, a data da compra e o valor total pago.
+
+Tabelas Cadastrais
+
+Filmes
+Sessao
+Cliente
+
+outras tabelas:
+
+Sala
+ingresso
+Compra

@@ -1,4 +1,4 @@
-package com.example.appbasickotlin
+package com.example.app_basic_kotlin
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

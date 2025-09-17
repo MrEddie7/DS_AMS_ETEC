@@ -10,6 +10,26 @@
     --font-family: 'Segoe UI', Arial, sans-serif;
 }
 
+
+
+/* Produtos: verde */
+.button-boxing.produtos {
+    background: #eafbe7;
+    border: 2px solid #28a745;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(40,167,69,0.08);
+    padding: 25px 20px;
+    margin: 30px auto;
+    max-width: 520px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+.button-boxing.produtos .boxing-title {
+    color: #28a745;
+}
+
 /* Reset básico */
 * {
     box-sizing: border-box;
@@ -18,43 +38,11 @@
 }
 
 body {
-    font-family: 'Segoe UI', 'Arial', sans-serif;
-    background: linear-gradient(135deg, #e0f7fa 0%, #f4f4f4 100%);
-    min-height: 100vh;
-    color: #333;
-    text-align: center;
+    font-family: Arial, sans-serif;
+    background-color: #eafbe7;
+    margin: 0;
+    padding: 0;
 }
-
-.container {
-    max-width: 900px;
-    margin: 100px auto 32px auto;
-    background: #fff;
-    padding: 32px 24px;
-    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
-    border-radius: 12px;
-}
-
-h1, h2 {
-    color: #219150;
-    margin-bottom: 24px;
-    font-weight: 700;
-    text-align: center;
-}
-
-/* Estilo para o título e mensagens */
-h1 {
-    color: #1976d2;
-    text-align: center;
-    margin-top: 30px;
-}
-.msg {
-    text-align: center;
-    margin-bottom: 15px;
-    color: #1976d2;
-    font-weight: bold;
-}
-
-/* ...restante do CSS já padronizado... */
 
 .menu-container {
     max-width: 500px;
@@ -62,12 +50,12 @@ h1 {
     padding: 30px 25px;
     background: #fff;
     border-radius: 12px;
-    box-shadow: 0 4px 16px rgba(0,123,255,0.10);
+    box-shadow: 0 4px 16px rgba(40,167,69,0.10);
     text-align: center;
 }
 
 .menu-container h1 {
-    color: #007BFF;
+    color: #28a745;
     margin-bottom: 25px;
     font-size: 2em;
     letter-spacing: 1px;
@@ -85,7 +73,7 @@ h1 {
 .menu-container input[type="email"],
 .menu-container input[type="number"] {
     padding: 10px;
-    border: 1px solid #007BFF;
+    border: 1px solid #28a745;
     border-radius: 5px;
     font-size: 1em;
     margin-bottom: 8px;
@@ -95,11 +83,11 @@ h1 {
 
 .menu-container select:focus,
 .menu-container input:focus {
-    border-color: #0056b3;
+    border-color: #218838;
 }
 
 .menu-container button[type="submit"] {
-    background-color: #007BFF;
+    background-color: #28a745;
     color: white;
     border: none;
     border-radius: 5px;
@@ -111,7 +99,7 @@ h1 {
 }
 
 .menu-container button[type="submit"]:hover {
-    background-color: #0056b3;
+    background-color: #218838;
 }
 
 .menu-container p {
@@ -124,7 +112,7 @@ h1 {
     display: inline-block;
     margin-top: 10px;
     padding: 10px 20px;
-    background-color: #007BFF;
+    background-color: #28a745;
     color: white;
     text-decoration: none;
     border-radius: 5px;
@@ -133,22 +121,22 @@ h1 {
 }
 
 .btn-voltar:hover {
-    background-color: #0056b3;
+    background-color: #218838;
 }
 
 button {
-    margin: 10px;
     padding: 10px 20px;
     font-size: 16px;
     cursor: pointer;
-    background-color: #007BFF;
+    background-color: #28a745;
     color: white;
     border: none;
     border-radius: 5px;
+    transition: background 0.2s;
 }
 
 button:hover {
-    background-color: #0056b3;
+    background-color: #218838;
 }
 
 #data-container {
@@ -170,7 +158,7 @@ th, td {
 }
 
 th {
-    background-color: #007BFF;
+    background-color: #28a745;
     color: white;
 }
 
@@ -181,7 +169,7 @@ th {
     gap: 15px;
     padding: 25px 20px;
     background: #e3f0ff;
-    border: 2px solid #007BFF;
+    border: 2px solid #219150;
     border-radius: 12px;
     margin: 30px auto;
     max-width: 520px;
@@ -191,7 +179,7 @@ th {
 .boxing-title {
     font-size: 1.3em;
     font-weight: bold;
-    color: #007BFF;
+    color: #219150;
     margin-bottom: 10px;
     letter-spacing: 1px;
 }
@@ -310,7 +298,7 @@ input[type="text"] {
 }
 button, a {
     padding: 8px 16px;
-    background: #1976d2;
+    background: #219150;
     color: #fff;
     border: none;
     border-radius: 4px;
@@ -319,28 +307,48 @@ button, a {
     transition: background 0.2s;
 }
 button:hover, a:hover {
-    background: #1565c0;
+    background: #219150;
 }
 
 /* Estilo da tabela de produtos */
 table.prod-table {
-    width: 90%;
-    margin: 0 auto;
-    border-collapse: collapse;
+    width: 100%;
+    margin: 0 auto 24px auto;
+    border-collapse: separate;
+    border-spacing: 0;
     background: #fff;
     box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    border-radius: 12px;
+    overflow: hidden;
 }
 table.prod-table th, table.prod-table td {
-    padding: 10px;
-    border: 1px solid #ddd;
-    text-align: left;
+    padding: 14px 10px;
+    border-bottom: 1px solid #e0e0e0;
+    text-align: center;
+    font-size: 1.05em;
 }
 table.prod-table th {
-    background: #1976d2;
+    background: linear-gradient(90deg, #219150 80%, #176d37 100%);
     color: #fff;
+    font-weight: 600;
+    letter-spacing: 1px;
+    border-bottom: 2px solid #176d37;
+}
+table.prod-table tr:last-child td {
+    border-bottom: none;
 }
 table.prod-table tr:nth-child(even) {
-    background: #f2f2f2;
+    background: #f8fbff;
+}
+table.prod-table tr:hover {
+    background: #e9f5ee;
+    transition: background 0.2s;
+}
+@media (max-width: 700px) {
+    table.prod-table th, table.prod-table td {
+        padding: 10px 4px;
+        font-size: 0.95em;
+    }
 }
 
 /* Botão de excluir */
@@ -434,17 +442,94 @@ button[type="submit"]:hover {
     background-color: #176d37;
 }
 
-/* Responsivo */
-@media (max-width: 600px) {
+/* Ajuste visual para páginas de Produtos */
+.container {
+    max-width: 700px;
+    margin: 40px auto;
+    padding: 30px 25px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(40,167,69,0.10);
+    text-align: center;
+}
+
+h1 {
+    color: #219150;
+    margin-bottom: 25px;
+    font-size: 2em;
+    letter-spacing: 1px;
+}
+
+.form-actions, .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 18px;
+}
+
+.form-pesquisa {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.form-pesquisa input[type="text"], .form-pesquisa select {
+    padding: 8px;
+    border: 1px solid #219150;
+    border-radius: 4px;
+    width: 180px;
+}
+
+.form-pesquisa button {
+    padding: 8px 16px;
+    background: #219150;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.form-pesquisa button:hover {
+    background: #176d37;
+}
+
+.msg {
+    color: #176d37;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.prod-table th, .prod-table td {
+    text-align: center;
+}
+
+.btn-excluir {
+    background: #d32f2f !important;
+    color: #fff !important;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.2s;
+    display: inline-block;
+}
+.btn-excluir:hover {
+    background: #b71c1c !important;
+}
+
+@media (max-width: 700px) {
     .container {
         padding: 16px 6px;
-        margin-top: 80px;
     }
-    table th, table td {
-        padding: 8px 4px;
-        font-size: 0.95em;
+    .form-actions, .actions {
+        flex-direction: column;
+        gap: 8px;
     }
-    input[type="text"], input[type="email"], input[type="number"], select, button[type="submit"] {
+    .prod-table {
         width: 100%;
     }
 }

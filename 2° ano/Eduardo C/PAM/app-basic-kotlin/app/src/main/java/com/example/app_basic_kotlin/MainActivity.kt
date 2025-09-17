@@ -1,6 +1,7 @@
-package com.example.appbasickotlin
+package com.example.app_basic_kotlin
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -68,11 +69,19 @@ class MainActivity : ComponentActivity() {
                         }
                         composable("cadastrarProduto") {
                             CadastrarProdutoScreen(
-                                onRegisterComplete = { navController.popBackStack() }
+                                onRegisterComplete = {
+                                    navController.popBackStack()
+                                },
+                                context = this@MainActivity
                             )
                         }
                         composable("listarProdutos") {
-                            ListarProdutosScreen(onBack = { navController.popBackStack() })
+                            ListarProdutosScreen(
+                                onBack = {
+                                    navController.popBackStack()
+                                },
+                                context = this@MainActivity
+                            )
                         }
                     }
                 }

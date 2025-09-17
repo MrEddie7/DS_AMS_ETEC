@@ -1,0 +1,32 @@
+
+BD I ==> DATA LIMITE PARA (RE)ENTREGA DAS TAREFAS REFERENTES AO 3º BIMESTRE: 17 de Setembro (QUARTA-FEIRA) 
+
+	lista 09 ===> normalização (cliente/curso/dependente e microsufiti)
+	lista 10 ===> normalização (ficha médica)
+	lista 11 ===> normalização (floricultura)
+	lista 12 ===> prova prática: pizzaria e berçario 
+		 ===> Provão Etec
+
+
+PW II ==> DATA LIMITE PARA (RE)ENTREGA DAS TAREFAS REFERENTES AO 3º BIMESTRE: 18 de Setembro (QUINTA-FEIRA) 
+
+	Lista 8	===> cadastro	
+	Lista 9	===> pesquisar e excluir	
+        	===> Provão Etec			
+
+
+DS ==> DATA LIMITE PARA (RE)ENTREGA DAS TAREFAS REFERENTES AO 3º BIMESTRE: 18 de Setembro (QUINTA-FEIRA) 
+
+	lista 9	====> projeto "calculadora - MENU" 
+	lista 10 ===> projeto "conexão - bd cliente" 
+	lista 11 ===> projeto "login de acesso"		
+		 ===> Provão Etec		
+
+
+
+****** OBSERVAÇÃO: Entregas somente "presencial" e "na respectiva aula"! ******
+ 
+
+
+
+

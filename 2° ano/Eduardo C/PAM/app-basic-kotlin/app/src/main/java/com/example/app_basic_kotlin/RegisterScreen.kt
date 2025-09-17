@@ -1,4 +1,4 @@
-package com.example.appbasickotlin
+package com.example.app_basic_kotlin
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -21,6 +21,10 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.app_basic_kotlin.R
+import com.example.app_basic_kotlin.data.AppDatabase
+import com.example.app_basic_kotlin.data.User
+import androidx.compose.ui.platform.LocalContext
+import kotlinx.coroutines.launch
 
 
 @Composable
@@ -125,14 +129,44 @@ fun RegisterScreen(onRegisterComplete: () -> Unit) {
 
                 Spacer(modifier = Modifier.height(20.dp))
 
+                val context = LocalContext.current
+                val db = AppDatabase.getDatabase(context)
+                val dao = db.userDao()
+                val scope = rememberCoroutineScope()
+                var errorMessage by remember { mutableStateOf<String?>(null) }
+
                 Button(
-                    onClick = { onRegisterComplete() },
+                    onClick = {
+                        if (username.isBlank() || email.isBlank() || password.isBlank() || confirmPassword.isBlank()) {
+                            errorMessage = "Preencha todos os campos"
+                        } else if (password != confirmPassword) {
+                            errorMessage = "Senhas não conferem"
+                        } else {
+                            scope.launch {
+                                try {
+                                    dao.insert(User(username = username, email = email, password = password))
+                                    onRegisterComplete()
+                                } catch (e: Exception) {
+                                    errorMessage = "Usuário já existe ou erro ao cadastrar"
+                                }
+                            }
+                        }
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(48.dp),
                     shape = RoundedCornerShape(12.dp)
                 ) {
                     Text("Cadastrar", fontSize = 16.sp)
+                }
+
+                errorMessage?.let {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = it,
+                        color = MaterialTheme.colorScheme.error,
+                        fontSize = 14.sp
+                    )
                 }
 
                 Spacer(modifier = Modifier.height(12.dp))

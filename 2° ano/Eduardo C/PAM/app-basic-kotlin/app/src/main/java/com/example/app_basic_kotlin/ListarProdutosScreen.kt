@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalMaterial3Api::class)
 
-package com.example.appbasickotlin
+package com.example.app_basic_kotlin
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -22,23 +22,29 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.app_basic_kotlin.data.Produto
+import com.example.app_basic_kotlin.data.AppDatabase
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
+import android.content.Context
+import kotlinx.coroutines.launch
 
 @ExperimentalMaterial3Api
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ListarProdutosScreen(onBack: () -> Unit) {
-    val produtos = remember {
-        mutableStateListOf(
-            Produto("Notebook Gamer", 5, "RTX 4090, 32GB RAM"),
-            Produto("Smartphone", 15, "Tela AMOLED 6.5\""),
-            Produto("Fone Bluetooth", 30, "Noise Cancelling")
-        )
-    }
-
+fun ListarProdutosScreen(onBack: () -> Unit, context: Context) {
+    val scope = rememberCoroutineScope()
+    var produtos by remember { mutableStateOf(listOf<Produto>()) }
     var produtoEmEdicao by remember { mutableStateOf<Produto?>(null) }
     var nome by remember { mutableStateOf("") }
     var quantidade by remember { mutableStateOf("") }
     var descricao by remember { mutableStateOf("") }
+    val db = AppDatabase.getDatabase(context)
+    val dao = db.produtoDao()
+
+    LaunchedEffect(Unit) {
+        produtos = dao.getAll()
+    }
 
     val gradient = Brush.verticalGradient(
         colors = listOf(
@@ -66,7 +72,7 @@ fun ListarProdutosScreen(onBack: () -> Unit) {
                 .fillMaxSize()
                 .background(brush = gradient)
         ) {
-            items(produtos, key = { it.nome }) { produto ->
+            items(produtos, key = { it.id }) { produto ->
                 Card(
                     shape = RoundedCornerShape(16.dp),
                     elevation = CardDefaults.cardElevation(8.dp),
@@ -110,7 +116,12 @@ fun ListarProdutosScreen(onBack: () -> Unit) {
                         }) {
                             Icon(Icons.Filled.Edit, contentDescription = "Editar")
                         }
-                        IconButton(onClick = { produtos.remove(produto) }) {
+                        IconButton(onClick = {
+                            scope.launch {
+                                dao.delete(produto)
+                                produtos = dao.getAll()
+                            }
+                        }) {
                             Icon(Icons.Filled.Delete, contentDescription = "Excluir")
                         }
                     }
@@ -147,15 +158,16 @@ fun ListarProdutosScreen(onBack: () -> Unit) {
             },
             confirmButton = {
                 TextButton(onClick = {
-                    val index = produtos.indexOf(produtoEmEdicao)
-                    if (index >= 0) {
-                        produtos[index] = Produto(
-                            nome,
-                            quantidade.toIntOrNull() ?: 0,
-                            descricao
+                    scope.launch {
+                        val updatedProduto = produtoEmEdicao!!.copy(
+                            nome = nome,
+                            quantidade = quantidade.toIntOrNull() ?: 0,
+                            descricao = descricao
                         )
+                        dao.update(updatedProduto)
+                        produtos = dao.getAll()
+                        produtoEmEdicao = null
                     }
-                    produtoEmEdicao = null
                 }) {
                     Text("Salvar")
                 }
@@ -166,9 +178,3 @@ fun ListarProdutosScreen(onBack: () -> Unit) {
         )
     }
 }
-
-data class Produto(
-    val nome: String,
-    val quantidade: Int,
-    val descricao: String
-)

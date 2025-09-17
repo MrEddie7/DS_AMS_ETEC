@@ -35,7 +35,11 @@
                 ?>
             </tbody>
         </table>
-        <a href="menu.html" class="btn-voltar">Voltar</a>
+        <div class="actions">
+            <a href="cadastrar.php" class="btn">Cadastrar Produto</a>
+            <a href="excluir.php" class="btn">Excluir Produto</a>
+            <a href="menu.html" class="btn-voltar">Voltar ao Menu</a>
+        </div>
     </div>
 </body>
 </html>

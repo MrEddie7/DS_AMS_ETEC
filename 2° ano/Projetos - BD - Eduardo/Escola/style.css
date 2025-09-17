@@ -246,42 +246,47 @@ th {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 15px;
-    padding: 25px 20px;
+    gap: 18px;
+    padding: 28px 22px;
     background: #e3f0ff;
     border: 2px solid #007BFF;
-    border-radius: 12px;
-    margin: 30px auto;
-    max-width: 520px;
-    box-shadow: 0 4px 12px rgba(0,123,255,0.08);
+    border-radius: 14px;
+    margin: 32px auto;
+    max-width: 540px;
+    box-shadow: 0 4px 14px rgba(0,123,255,0.10);
 }
 
 .boxing-title {
-    font-size: 1.3em;
+    font-size: 1.35em;
     font-weight: bold;
     color: #007BFF;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
     letter-spacing: 1px;
 }
 
 .boxing-buttons {
     display: flex;
-    gap: 15px;
+    flex-direction: column;
+    width: 100%;
+    gap: 14px;
+    align-items: stretch;
 }
 
-.btn-cadastrar button {
-    background-color: #28a745;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    padding: 10px 20px;
-    font-size: 16px;
+.boxing-buttons button {
+    padding: 12px 0;
+    font-size: 1.08em;
+    border-radius: 6px;
+    border: 1px solid #007BFF;
+    background: #f0f8ff;
+    color: #007BFF;
     cursor: pointer;
-    margin-left: 10px;
+    transition: background 0.2s, color 0.2s;
+    width: 100%;
 }
 
-.btn-cadastrar button:hover {
-    background-color: #218838;
+.boxing-buttons button:hover {
+    background: #007BFF;
+    color: #fff;
 }
 
 /* Centralizar todos os textos */

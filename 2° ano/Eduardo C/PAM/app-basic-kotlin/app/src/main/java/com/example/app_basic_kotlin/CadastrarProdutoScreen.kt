@@ -1,4 +1,4 @@
-package com.example.appbasickotlin
+package com.example.app_basic_kotlin
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -20,13 +20,21 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.app_basic_kotlin.R
+import com.example.app_basic_kotlin.data.Produto
+import com.example.app_basic_kotlin.data.AppDatabase
+import androidx.compose.runtime.rememberCoroutineScope
+import android.content.Context
+import kotlinx.coroutines.launch
 
 
 @Composable
-fun CadastrarProdutoScreen(onRegisterComplete: () -> Unit) {
+fun CadastrarProdutoScreen(onRegisterComplete: () -> Unit, context: Context) {
     var produto by remember { mutableStateOf("") }
     var quantidade by remember { mutableStateOf("") }
     var descricao by remember { mutableStateOf("") }
+    val scope = rememberCoroutineScope()
+    val db = AppDatabase.getDatabase(context)
+    val dao = db.produtoDao()
 
     val gradient = Brush.verticalGradient(
         colors = listOf(
@@ -105,7 +113,16 @@ fun CadastrarProdutoScreen(onRegisterComplete: () -> Unit) {
                 Spacer(modifier = Modifier.height(20.dp))
 
                 Button(
-                    onClick = { onRegisterComplete() },
+                    onClick = {
+                        scope.launch {
+                            dao.insert(Produto(
+                                nome = produto,
+                                quantidade = quantidade.toIntOrNull() ?: 0,
+                                descricao = descricao
+                            ))
+                            onRegisterComplete()
+                        }
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(48.dp),
