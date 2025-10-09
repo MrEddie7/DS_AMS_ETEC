@@ -1,97 +1,90 @@
-#include <WiFi.h>
-#include <HTTPClient.h>
-#include <WiFiClientSecure.h>
+#include <Wire.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
-#include <Adafruit_I2CDevice.h>
+#include <WiFi.h>
+#include <WiFiClientSecure.h>
+#include <HTTPClient.h>
 
+// ----------------- CONFIGURAÇÕES DO DISPLAY -----------------
+#define SCREEN_WIDTH 128
+#define SCREEN_HEIGHT 64
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
 
-#define LDR_PIN 34
+// ----------------- CONFIGURAÇÕES WIFI -----------------
+const char* ssid = "Teste"; // Troque pelo nome da sua rede WiFi
+const char* password = "123456789"; // Troque pela senha da WiFi
 
-const char* ssid = "Wokwi-GUEST";
-const char* password = "";
+// ----------------- CONFIGURAÇÃO DA API -----------------
 const char* server = "https://painel-solar-api.onrender.com/dados";
 
-Adafruit_SSD1306 display(128, 64, &Wire, -1);
-
-// Função para garantir que está conectado
-void verificarWiFi() {
-  if (WiFi.status() != WL_CONNECTED) {
-    Serial.print("Reconectando ao WiFi");
-    WiFi.disconnect();
-    WiFi.begin(ssid, password);
-    int tentativas = 0;
-    while (WiFi.status() != WL_CONNECTED && tentativas < 20) {
-      delay(500);
-      Serial.print(".");
-      tentativas++;
-    }
-    if (WiFi.status() == WL_CONNECTED) {
-      Serial.println(" Reconectado!");
-    } else {
-      Serial.println(" Falha ao reconectar.");
-    }
-  }
-}
+// ----------------- CONFIGURAÇÃO DO LDR -----------------
+#define LDR_PIN 34 // Pino ADC do ESP32
+float energiaFator = 0.5; // Multiplicador fictício para energia
 
 void setup() {
   Serial.begin(115200);
-  pinMode(LDR_PIN, INPUT);
+  Wire.begin(21, 22); // SDA=21, SCL=22
 
+  // Conexão WiFi
+  Serial.println("🔄 Conectando ao WiFi...");
   WiFi.begin(ssid, password);
-  Serial.print("Conectando ao WiFi");
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
     Serial.print(".");
   }
-  Serial.println(" Conectado!");
+  Serial.println("\n✅ WiFi conectado!");
 
+  // Inicializar Display
   if (!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) {
-    Serial.println("Display não encontrado");
+    Serial.println("❌ Erro: Display não encontrado!");
     while (true);
   }
   display.clearDisplay();
+  display.setTextSize(1);
+  display.setTextColor(SSD1306_WHITE);
+  display.setCursor(0, 0);
+  display.println("Sistema iniciado...");
+  display.display();
+  delay(1000);
 }
 
 void loop() {
-  verificarWiFi();
+  // ----------------- Ler LDR -----------------
+  int ldrRaw = analogRead(LDR_PIN); // 0-4095
+  float lux = map(ldrRaw, 0, 4095, 0, 10000); // Ajuste máximo 10.000 lx
+  float energia = lux * energiaFator;
 
-  int valorLDR = analogRead(LDR_PIN);
-  float energia = map(valorLDR, 0, 4095, 0, 1000);
+  Serial.printf("📡 Luminosidade: %.2f lx | Energia: %.2f W\n", lux, energia);
 
-  Serial.printf("Radiação: %d - Energia: %.2f W\n", valorLDR, energia);
-
+  // ----------------- Mostrar no Display -----------------
   display.clearDisplay();
-  display.setTextSize(1);
-  display.setTextColor(SSD1306_WHITE);
-  display.setCursor(0, 10);
-  display.print("Radiação: ");
-  display.println(valorLDR);
+  display.setCursor(0, 0);
+  display.print("Luminosidade: ");
+  display.println(lux);
   display.print("Energia: ");
   display.print(energia);
-  display.print(" W");
+  display.println(" W");
   display.display();
 
+  // ----------------- Esperar 2 segundos antes de enviar -----------------
+  delay(2000);
+
+  // ----------------- Enviar para API -----------------
   if (WiFi.status() == WL_CONNECTED) {
     WiFiClientSecure client;
-    client.setInsecure();  
+    client.setInsecure(); // Aceita certificados HTTPS inseguros
 
     HTTPClient http;
     http.begin(client, server);
     http.addHeader("Content-Type", "application/json");
 
-    String json = "{\"radiacao\":" + String(valorLDR) + ",\"energia\":" + String(energia) + "}";
+    String json = "{\"radiacao\":" + String(lux) + ",\"energia\":" + String(energia) + "}";
     int httpResponseCode = http.POST(json);
 
     if (httpResponseCode > 0) {
-      Serial.printf("✅ Dados enviados! Código: %d\n", httpResponseCode);
+      Serial.printf("✅ Dados enviados! Código HTTP: %d\n", httpResponseCode);
     } else {
-      Serial.printf("❌ Falha no envio. Código: %d - ", httpResponseCode);
-      if (httpResponseCode == -1) {
-        Serial.println("Erro de conexão (timeout ou rede).");
-      } else {
-        Serial.println("Erro desconhecido.");
-      }
+      Serial.printf("❌ Erro ao enviar. Código: %d\n", httpResponseCode);
     }
 
     http.end();
@@ -99,5 +92,6 @@ void loop() {
     Serial.println("⚠️ WiFi desconectado. Não foi possível enviar dados.");
   }
 
-  delay(5000);
+  // ----------------- Esperar o restante do tempo (4 segundos) -----------------
+  delay(4000); // 2s + 4s = 6s total
 }

@@ -51,49 +51,68 @@ class Produto
 
     // Métodos de CRUD
     public function salvar() {
-        try {
-            $this->conn = new Conectar();
-            $sql = $this->conn->prepare("insert into produtos values (null,?,?)");
-            @$sql->bindParam(1, $this->getNome(), PDO::PARAM_STR);
-            @$sql->bindParam(2, $this->getEstoque(), PDO::PARAM_STR);
-            if($sql->execute() == 1) {
-                return "Registro realizado";
-            }
-            $this->conn = null;
-        } catch (PDOException $exc) {
-            echo "Erro de conexao" . $exc->getMessage();
+    try {
+        $this->conn = new Conectar();
+        $sql = $this->conn->prepare("insert into produtos values (null,?,?)");
+
+        $nome = $this->getNome();
+        $estoque = $this->getEstoque();
+
+        $sql->bindParam(1, $nome, PDO::PARAM_STR);
+        $sql->bindParam(2, $estoque, PDO::PARAM_INT);
+
+        if($sql->execute() == 1) {
+            return "Registro realizado";
         }
+        $this->conn = null;
+    } catch (PDOException $exc) {
+        echo "Erro de conexao" . $exc->getMessage();
     }
+}
+
     public function alterar() {
-        try {
-            $this->conn = new Conectar();
-            $sql = $this->conn->prepare("select * from produtos where id = ?");
-            $sql->bindParam(1, $this->getId(), PDO::PARAM_STR);
-            $sql->execute();
-            $result = $sql->fetchAll();
-            $this->conn = null;
-            return $result;
-        } catch (PDOException $exc) {
-            $this->conn = null;
-            echo "Erro ao listar. " . $exc->getMessage();
-        }
+    try {
+        $this->conn = new Conectar();
+        $sql = $this->conn->prepare("select * from produtos where id = ?");
+
+        $id = $this->getId(); // cria a variável antes
+        $sql->bindParam(1, $id, PDO::PARAM_INT);
+
+        $sql->execute();
+        $result = $sql->fetchAll();
+        $this->conn = null;
+        return $result;
+    } catch (PDOException $exc) {
+        $this->conn = null;
+        echo "Erro ao listar. " . $exc->getMessage();
     }
-    public function alterar2() {
-        try {
-            $this->conn = new Conectar();
-            $sql = $this->conn->prepare("update produtos set nome = ?, estoque = ? where id = ?");
-            @$sql->bindParam(1, $this->getNome(), PDO::PARAM_STR);
-            @$sql->bindParam(2, $this->getEstoque(), PDO::PARAM_STR);
-            @$sql->bindParam(3, $this->getId(), PDO::PARAM_STR);
-            if ($sql->execute()) {
-                $this->conn = null;
-                return "Registro realizado com sucesso!";
-            }
-        } catch (PDOException $exc) {
+}
+
+   public function alterar2() {
+    try {
+        $this->conn = new Conectar();
+        $sql = $this->conn->prepare("update produtos set nome = ?, estoque = ? where id = ?");
+
+        // Criar variáveis antes de passar para bindParam
+        $nome = $this->getNome();
+        $estoque = $this->getEstoque();
+        $id = $this->getId();
+
+        $sql->bindParam(1, $nome, PDO::PARAM_STR);
+        $sql->bindParam(2, $estoque, PDO::PARAM_INT);
+        $sql->bindParam(3, $id, PDO::PARAM_INT);
+
+        if ($sql->execute()) {
             $this->conn = null;
-            echo "Erro ao salvar. " . $exc->getMessage();
+            return "Registro realizado com sucesso!";
         }
+    } catch (PDOException $exc) {
+        $this->conn = null;
+        echo "Erro ao salvar. " . $exc->getMessage();
     }
+}
+
+
     public function consultar() {
         try {
             $this->conn = new Conectar();

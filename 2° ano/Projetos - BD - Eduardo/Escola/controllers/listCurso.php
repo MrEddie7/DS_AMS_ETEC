@@ -88,26 +88,41 @@ class Curso
         }
     }
     // Método para editar curso
-    public function editar()
-    {
-        try {
-            $this->conn = new Conectar; // Conectar método getConnection()
-            $sql = $this->conn->prepare("UPDATE cursos SET Nome = :Nome, coddisc1 = :coddisc1, coddisc2 = :coddisc2, coddisc3 = :coddisc3 WHERE CodCurso = :CodCurso");
-            $sql->bindValue(':CodCurso', $this->CodCurso);
-            $sql->bindValue(':Nome', $this->Nome);
-            $sql->bindValue(':coddisc1', $this->coddisc1);
-            $sql->bindValue(':coddisc2', $this->coddisc2);
-            $sql->bindValue(':coddisc3', $this->coddisc3);
-            if ($sql->execute()) {
-                return true;
-            } else {
-                return false;
-            }
-        } catch (PDOException $exc) {
-            echo "Erro ao editar curso: " . $exc->getMessage();
+public function editar()
+{
+    try {
+        $this->conn = new Conectar;
+        $sql = $this->conn->prepare("UPDATE cursos SET Nome = :Nome, coddisc1 = :coddisc1, coddisc2 = :coddisc2, coddisc3 = :coddisc3 WHERE CodCurso = :CodCurso");
+        $sql->bindValue(':CodCurso', $this->CodCurso);
+        $sql->bindValue(':Nome', $this->Nome);
+        $sql->bindValue(':coddisc1', $this->coddisc1);
+        $sql->bindValue(':coddisc2', $this->coddisc2);
+        $sql->bindValue(':coddisc3', $this->coddisc3);
+        if ($sql->execute()) {
+            return true;
+        } else {
+            return false;
         }
+    } catch (PDOException $exc) {
+        echo "Erro ao editar curso: " . $exc->getMessage();
+        return false;
     }
-    
+}
+    // Método para buscar curso por código
+public function buscarPorCodigo($codCurso = null)
+{
+    try {
+        $this->conn = new Conectar;
+        $sql = $this->conn->prepare("SELECT * FROM cursos WHERE CodCurso = :CodCurso");
+        $sql->bindValue(':CodCurso', $codCurso ?? $this->CodCurso);
+        $sql->execute();
+        $result = $sql->fetch(PDO::FETCH_ASSOC);
+        $this->conn = null;
+        return $result;
+    } catch (PDOException $exc) {
+        echo "Erro ao buscar curso: " . $exc->getMessage();
+    }
+}
 
     // Método para listar cursos
     public function listar()

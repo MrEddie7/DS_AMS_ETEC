@@ -8,27 +8,19 @@
 <body>
     <div class="menu-container">
         <h1>Menu Principal</h1>
-
-        
-       
-        <!-- Escola -->
-        <div class="button-boxing">
-            <div class="boxing-title">Escola</div>
-            <div class="boxing-buttons">
-                
-                <button onclick="location.href='../controllers/cadastrar.php'">Cadastrar</button>
-                
-                <button onclick="location.href='alunos.php'">Listar Alunos</button>
-                
-                <button onclick="location.href='cursos.php'">Listar Cursos</button>
-                
-                <button onclick="location.href='disciplina.php'">Listar Disciplinas</button>
-                
-                <button onclick="location.href='turmas.php'">Listar Turmas</button>
-
-                <button onclick="location.href='excluir.php'">Excluir/Pesquisar</button>
+        <div class="button-boxing escola">
+            <div class="boxing-title">Gestão Escolar</div>
+            <div class="boxing-buttons" style="flex-direction:column;gap:18px;width:100%;">
+                <div class="btn-cadastrar">
+                    <button onclick="location.href='../controllers/cadastrar.php'">Cadastrar Novo</button>
+                </div>
+                <button onclick="location.href='excluir.php?tipo=alunos'">Gerenciar Alunos</button>
+                <button onclick="location.href='excluir.php?tipo=cursos'">Gerenciar Cursos</button>
+                <button onclick="location.href='excluir.php?tipo=disciplinas'">Gerenciar Disciplinas</button>
+                <button onclick="location.href='excluir.php?tipo=turmas'">Gerenciar Turmas</button>
             </div>
         </div>
+        <a>Eduardo Cavalcante, 2025</a>
     </div>
 </body>
 </html>

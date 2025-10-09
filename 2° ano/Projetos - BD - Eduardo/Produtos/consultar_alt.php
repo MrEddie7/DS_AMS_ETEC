@@ -1,63 +1,83 @@
 <?php
+include_once 'Produtos.php';
 
-require_once 'Produtos.php';
+// Se salvou alteração
+if (isset($_POST['alterar'])) {
+    $p = new Produto();
+    $p->setId($_POST['id']);
+    $p->setNome($_POST['nome']);
+    $p->setEstoque($_POST['estoque']);
 
-$alterar = new Alterar();
-
-// Simulação de alteração (adicione produtos via formulário)
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['nome'])) {
-    $alterar->adicionar($_POST['nome']);
+    $msg = $p->alterar2();
+    echo "<div class='container'>";
+    echo "<p class='menu-container'><strong style='color: green;'>$msg</strong></p>";
+    echo "<a href='consultar_alt.php' class='btn-voltar'>Voltar</a>";
+    echo "</div>";
+    exit();
 }
-
-// Consulta dos produtos alterados
-$produtos = $alterar->listar();
 ?>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Alterar Produto</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+<?php
+// Se clicou para alterar um produto específico
+if (isset($_GET['id'])) {
+    $p = new Produto();
+    $p->setId($_GET['id']);
+    $dados = $p->alterar();
 
-<form method="post">
-    Nome do produto: <input type="text" name="nome">
-    <input type="submit" value="Alterar Produto">
-</form>
-
-<h3>Produtos alterados:</h3>
-<ul>
-    <?php foreach ($produtos as $p): ?>
-        <li><?php echo htmlspecialchars($p); ?></li>
-    <?php endforeach; ?>
-</ul>
-
-            else {
-                return "Erro ao registrar";
-            }
-            $this->conn = null;
-        } catch (PDOException $exc) {
-            echo "Erro ao executar consulta: " . $exc->getMessage();
-        }
+    if ($dados) {
+        $row = $dados[0];
+        ?>
+        <h2>Alterar Produto</h2>
+        <form method="post" action="consultar_alt.php">
+            <div class="form-group">
+                <input type="hidden" name="id" value="<?php echo htmlspecialchars($row['ID']); ?>">
+            </div>
+            <div class="form-group">
+                <label for="nome">Nome:</label>
+                <input type="text" id="nome" name="nome" value="<?php echo htmlspecialchars($row['Nome']); ?>" required>
+            </div>
+            <div class="form-group">
+                <label for="estoque">Estoque:</label>
+                <input type="number" id="estoque" name="estoque" value="<?php echo htmlspecialchars($row['Estoque']); ?>" required>
+            </div>
+            <button type="submit" name="alterar" class="btn">Salvar Alterações</button>
+        </form>
+        <div class="form-actions">
+            <a href="consultar_alt.php" class="btn-voltar">Voltar</a>
+        </div>
+        <?php
+    } else {
+        echo "<p>Produto não encontrado.</p>";
     }
-}
-            }
-        } catch (PDOException $exc) {
-            $this->conn = null;
-            echo "Erro ao excluir. " . $exc->getMessage();
-        }
+} else {
+    // Listar todos os produtos
+    $p = new Produto();
+    $lista = $p->listar();
+
+    echo "<h2>Lista de Produtos</h2>";
+    echo "<table>";
+    echo "<tr><th>ID</th><th>Nome</th><th>Estoque</th><th>Ações</th></tr>";
+
+    foreach ($lista as $row) {
+        echo "<tr>";
+        echo "<td>" . htmlspecialchars($row['ID']) . "</td>";
+        echo "<td>" . htmlspecialchars($row['Nome']) . "</td>";
+        echo "<td>" . htmlspecialchars($row['Estoque']) . "</td>";
+        echo "<td><a href='consultar_alt.php?id=" . urlencode($row['ID']) . "' class='btn'>Alterar</a></td>";
+        echo "</tr>";
     }
+    echo "</table>";
 }
-            $this->conn = new Conectar();
-            $sql = $this->conn->prepare("select nome from produtos where nome like ?");
-            $nomeBusca = "%" . $this->getNome() . "%";
-            $sql->bindParam(1, $nomeBusca, PDO::PARAM_STR);
-            $sql->execute();
-            $result = $sql->fetchAll(PDO::FETCH_COLUMN);
-            $this->conn = null;
-            return $result;
-        } catch (PDOException $exc) {
-            echo "Erro ao executar consulta: " . $exc->getMessage();
-        }
-    } 
-    public function adicionar($nome) {
-        try {
-            $this->conn = new Conectar();
-            $sql = $this->conn->prepare("insert into produtos (nome) values (?)");
-            $sql->bindParam(1, $nome, PDO::PARAM_STR);
-            if ($sql->execute()) {
-                $this->conn = null;
-                return "Registro realizado com sucesso!";  
+?>
+ <a href="menu.html" class="btn-voltar">Voltar ao Menu</a>
+</div>
+</body>
+</html>
