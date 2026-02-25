@@ -30,6 +30,23 @@ CREATE TABLE Emprestimo(
 ID_emp int, PRIMARY KEY
 ID_User int,
 ID_Livro int,
+date_return date,
+date_ret date,
+
+)
+
+CREATE TABLE Livros (
+
+ID_Livro int, PRIMARY KEY,
+Nome varchar(40),
+ID_cat int,
+ID_Autor int,
+num_dis int,
+
+)
+
+CREATE TABLE Autores_livros (
 
 
+    
 )
