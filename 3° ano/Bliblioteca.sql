@@ -47,6 +47,15 @@ num_dis int,
 
 CREATE TABLE Autores_livros (
 
+ID_Autor int,
+ID_Livro int,
 
-    
+)
+
+CREATE TABLE Autor (
+
+ID_Autor int, PRIMARY KEY,
+nome varchar(25),
+Telefone varchar(15),
+
 )
