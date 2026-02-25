@@ -1,61 +1,53 @@
-CREATE DATABASE Biblioteca
-use Biblioteca
+CREATE DATABASE Biblioteca;
+USE Biblioteca;
 
 CREATE TABLE Usuario (
-
-ID_User int, PRIMARY KEY
-Nome varchar(25),
-Telefone varchar (15),
-num_emp int,
-
-);
-
-CREATE TABLE Categoria (
-
-ID_cat int, PRIMARY KEY
-Nome varchar(20),
-tipe_cat int,
-
+    ID_User INT PRIMARY KEY,
+    Nome VARCHAR(25),
+    Telefone VARCHAR(15),
+    num_emp INT
 );
 
 CREATE TABLE tipo_cat (
+    tipe_cat INT PRIMARY KEY,
+    desc_cat VARCHAR(20)
+);
 
-tipe_cat int, PRIMARY KEY
-desc_cat varchar (20),
-
-)
-
-CREATE TABLE Emprestimo(
-
-ID_emp int, PRIMARY KEY
-ID_User int,
-ID_Livro int,
-date_return date,
-date_ret date,
-
-)
-
-CREATE TABLE Livros (
-
-ID_Livro int, PRIMARY KEY,
-Nome varchar(40),
-ID_cat int,
-ID_Autor int,
-num_dis int,
-
-)
-
-CREATE TABLE Autores_livros (
-
-ID_Autor int,
-ID_Livro int,
-
-)
+CREATE TABLE Categoria (
+    ID_cat INT PRIMARY KEY,
+    Nome VARCHAR(20),
+    tipe_cat INT,
+    FOREIGN KEY (tipe_cat) REFERENCES tipo_cat(tipe_cat)
+);
 
 CREATE TABLE Autor (
+    ID_Autor INT PRIMARY KEY,
+    nome VARCHAR(25),
+    Telefone VARCHAR(15)
+);
 
-ID_Autor int, PRIMARY KEY,
-nome varchar(25),
-Telefone varchar(15),
+CREATE TABLE Livros (
+    ID_Livro INT PRIMARY KEY,
+    Nome VARCHAR(40),
+    ID_cat INT,
+    num_dis INT,
+    FOREIGN KEY (ID_cat) REFERENCES Categoria(ID_cat)
+);
 
-)
+CREATE TABLE Autores_livros (
+    ID_Autor INT,
+    ID_Livro INT,
+    PRIMARY KEY (ID_Autor, ID_Livro),
+    FOREIGN KEY (ID_Autor) REFERENCES Autor(ID_Autor),
+    FOREIGN KEY (ID_Livro) REFERENCES Livros(ID_Livro)
+);
+
+CREATE TABLE Emprestimo (
+    ID_emp INT PRIMARY KEY,
+    ID_User INT,
+    ID_Livro INT,
+    date_return DATE,
+    date_ret DATE,
+    FOREIGN KEY (ID_User) REFERENCES Usuario(ID_User),
+    FOREIGN KEY (ID_Livro) REFERENCES Livros(ID_Livro)
+);
