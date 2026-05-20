@@ -1,20 +1,38 @@
 package org.example.project.ui
 
+import androidx.compose.animation.*
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import kotlinx.coroutines.delay
 import org.example.project.data.TreinoRepository
 import org.example.project.domain.Exercicio
 import org.example.project.domain.Treino
 import org.example.project.domain.TreinoId
+import android.content.Context
+import androidx.compose.ui.platform.LocalContext
 
 private sealed interface Tela {
     data object Lista : Tela
@@ -22,61 +40,168 @@ private sealed interface Tela {
     data object Novo : Tela
 }
 
+// Timer State Holder to control the rest countdown globally
+private class RestTimerState {
+    var totalSeconds by mutableIntStateOf(60)
+    var secondsLeft by mutableIntStateOf(0)
+    var isRunning by mutableStateOf(false)
+    var isVisible by mutableStateOf(false)
+
+    fun start(durationSeconds: Int) {
+        totalSeconds = durationSeconds
+        secondsLeft = durationSeconds
+        isRunning = true
+        isVisible = true
+    }
+
+    fun pause() {
+        isRunning = false
+    }
+
+    fun resume() {
+        isRunning = true
+    }
+
+    fun addTime(seconds: Int) {
+        secondsLeft += seconds
+        totalSeconds += seconds
+    }
+
+    fun reset() {
+        secondsLeft = totalSeconds
+    }
+
+    fun stop() {
+        isRunning = false
+        isVisible = false
+        secondsLeft = 0
+    }
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ControladorTreinoApp(repo: TreinoRepository = remember { TreinoRepository() }) {
+fun ControladorTreinoApp(
+    context: Context = LocalContext.current,
+    repo: TreinoRepository = remember(context) { TreinoRepository(context.applicationContext) }
+) {
     var tela by remember { mutableStateOf<Tela>(Tela.Lista) }
     val treinos by repo.treinos.collectAsStateWithLifecycle()
+    val timerState = remember { RestTimerState() }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        when (val t = tela) {
-                            is Tela.Lista -> "Meus Treinos"
-                            is Tela.Novo -> "Novo Treino"
-                            is Tela.Detalhe -> treinos.firstOrNull { it.id == t.id }?.nome ?: "Treino"
-                        }
-                    )
-                },
-                navigationIcon = {
-                    if (tela !is Tela.Lista) {
-                        TextButton(onClick = { tela = Tela.Lista }) { Text("Voltar") }
-                    }
-                }
-            )
-        },
-        floatingActionButton = {
-            if (tela is Tela.Lista) {
-                ExtendedFloatingActionButton(
-                    text = { Text("Novo") }, icon = {},
-                    onClick = { tela = Tela.Novo }
-                )
+    // Coroutine layout timer
+    LaunchedEffect(timerState.isRunning, timerState.secondsLeft) {
+        if (timerState.isRunning && timerState.secondsLeft > 0) {
+            delay(1000L)
+            timerState.secondsLeft--
+            if (timerState.secondsLeft == 0) {
+                timerState.isRunning = false
             }
         }
-    ) { padding ->
-        Box(Modifier.padding(padding)) {
-            when (val t = tela) {
-                is Tela.Lista -> ListaTreinos(
-                    treinos = treinos,
-                    onAbrir = { tela = Tela.Detalhe(it.id) },
-                    onExcluir = { repo.removerTreino(it.id) }
-                )
-                is Tela.Novo -> NovoTreino(onSalvar = { n, d ->
-                    repo.adicionarTreino(n.trim(), d.trim()); tela = Tela.Lista
-                })
-                is Tela.Detalhe -> {
-                    val treino = treinos.firstOrNull { it.id == t.id }
-                    if (treino == null) tela = Tela.Lista
-                    else DetalheTreino(
-                        treino = treino,
-                        onToggle = { repo.alternarConclusao(treino.id, it.id) },
-                        onRemover = { repo.removerExercicio(treino.id, it.id) },
-                        onAdicionar = { n, s, r, c ->
-                            repo.adicionarExercicio(treino.id, n.trim(), s, r, c)
+    }
+
+    ControladorTreinoTheme {
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    title = {
+                        Text(
+                            text = when (val t = tela) {
+                                is Tela.Lista -> "MEUS TREINOS"
+                                is Tela.Novo -> "NOVO TREINO"
+                                is Tela.Detalhe -> treinos.firstOrNull { it.id == t.id }?.nome?.uppercase() ?: "TREINO"
+                            },
+                            fontWeight = FontWeight.Black,
+                            letterSpacing = 1.5.sp,
+                            fontSize = 20.sp,
+                            color = WhiteText
+                        )
+                    },
+                    navigationIcon = {
+                        if (tela !is Tela.Lista) {
+                            TextButton(
+                                onClick = { tela = Tela.Lista }
+                            ) {
+                                Text(
+                                    text = "VOLTAR",
+                                    color = CyberCyan,
+                                    fontWeight = FontWeight.Bold,
+                                    letterSpacing = 1.sp
+                                )
+                            }
                         }
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = DarkBackground,
+                        titleContentColor = WhiteText
                     )
+                )
+            },
+            floatingActionButton = {
+                if (tela is Tela.Lista) {
+                    ExtendedFloatingActionButton(
+                        text = { Text("CRIAR TREINO", fontWeight = FontWeight.Bold, letterSpacing = 1.sp) },
+                        icon = { Text("+", fontSize = 24.sp, fontWeight = FontWeight.Bold) },
+                        onClick = { tela = Tela.Novo },
+                        containerColor = NeonPurple,
+                        contentColor = Color.White,
+                        shape = RoundedCornerShape(12.dp)
+                    )
+                }
+            },
+            bottomBar = {
+                // Rest Timer Floating Pill at the bottom of the screen
+                AnimatedVisibility(
+                    visible = timerState.isVisible,
+                    enter = slideInVertically(initialOffsetY = { it }) + fadeIn(),
+                    exit = slideOutVertically(targetOffsetY = { it }) + fadeOut()
+                ) {
+                    RestTimerPill(state = timerState)
+                }
+            },
+            containerColor = DarkBackground
+        ) { padding ->
+            Box(
+                Modifier
+                    .fillMaxSize()
+                    .padding(padding)
+                    .background(DarkBackground)
+            ) {
+                when (val t = tela) {
+                    is Tela.Lista -> ListaTreinos(
+                        treinos = treinos,
+                        onAbrir = { tela = Tela.Detalhe(it.id) },
+                        onExcluir = { repo.removerTreino(it.id) },
+                        onReset = { repo.redefinirTemplates() }
+                    )
+                    is Tela.Novo -> NovoTreino(onSalvar = { n, d ->
+                        repo.adicionarTreino(n.trim(), d.trim())
+                        tela = Tela.Lista
+                    })
+                    is Tela.Detalhe -> {
+                        val treino = treinos.firstOrNull { it.id == t.id }
+                        if (treino == null) {
+                            tela = Tela.Lista
+                        } else {
+                            DetalheTreino(
+                                treino = treino,
+                                timerState = timerState,
+                                onToggle = { repo.alternarConclusao(treino.id, it.id) },
+                                onRemover = { repo.removerExercicio(treino.id, it.id) },
+                                onAdicionar = { n, s, r, c ->
+                                    repo.adicionarExercicio(treino.id, n.trim(), s, r, c)
+                                },
+                                onAlterarCarga = { exId, delta ->
+                                    repo.alterarCarga(treino.id, exId, delta)
+                                },
+                                onAlterarReps = { exId, delta ->
+                                    repo.alterarRepeticoes(treino.id, exId, delta)
+                                },
+                                onAlterarSeries = { exId, delta ->
+                                    repo.alterarSeries(treino.id, exId, delta)
+                                }
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -84,39 +209,237 @@ fun ControladorTreinoApp(repo: TreinoRepository = remember { TreinoRepository() 
 }
 
 @Composable
-private fun ListaTreinos(treinos: List<Treino>, onAbrir: (Treino) -> Unit, onExcluir: (Treino) -> Unit) {
-    if (treinos.isEmpty()) {
-        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Text("Nenhum treino cadastrado.")
+private fun ListaTreinos(
+    treinos: List<Treino>,
+    onAbrir: (Treino) -> Unit,
+    onExcluir: (Treino) -> Unit,
+    onReset: () -> Unit
+) {
+    Column(modifier = Modifier.fillMaxSize()) {
+        // Dashboard Card Header (Premium look)
+        DashboardPanel(treinos = treinos, onReset = onReset)
+
+        if (treinos.isEmpty()) {
+            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Text(
+                    "Nenhum treino cadastrado.",
+                    color = MutedText,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium
+                )
+            }
+            return
         }
-        return
+
+        LazyColumn(
+            Modifier
+                .fillMaxSize()
+                .padding(horizontal = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            contentPadding = PaddingValues(bottom = 80.dp, top = 8.dp)
+        ) {
+            items(treinos, key = { it.id.value }) { treino ->
+                TreinoCard(
+                    treino = treino,
+                    onClick = { onAbrir(treino) },
+                    onExcluir = { onExcluir(treino) }
+                )
+            }
+        }
     }
-    LazyColumn(
-        Modifier.fillMaxSize().padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+}
+
+@Composable
+private fun DashboardPanel(treinos: List<Treino>, onReset: () -> Unit) {
+    val totalExercicios = treinos.sumOf { it.totalExercicios }
+    val concluidos = treinos.sumOf { it.concluidos }
+    val progressoGeral = if (totalExercicios == 0) 0f else concluidos.toFloat() / totalExercicios
+    val volumeTotal = treinos.sumOf { it.volumeConcluido }
+
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        shape = RoundedCornerShape(16.dp),
+        border = BorderStroke(1.dp, Color(0xFF282834))
     ) {
-        items(treinos, key = { it.id.value }) { treino ->
-            ElevatedCard(onClick = { onAbrir(treino) }) {
-                Column(Modifier.padding(16.dp)) {
-                    Text(treino.nome, style = MaterialTheme.typography.titleMedium)
-                    if (treino.descricao.isNotBlank()) {
-                        Text(treino.descricao, style = MaterialTheme.typography.bodySmall)
-                    }
-                    Spacer(Modifier.height(8.dp))
-                    LinearProgressIndicator(
-                        progress = { treino.progresso },
-                        modifier = Modifier.fillMaxWidth()
+        Box(
+            modifier = Modifier
+                .background(
+                    Brush.verticalGradient(
+                        colors = listOf(DarkSurface, DarkBackground)
                     )
-                    Spacer(Modifier.height(4.dp))
-                    Row(
-                        Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text("${treino.concluidos}/${treino.totalExercicios} concluídos")
-                        TextButton(onClick = { onExcluir(treino) }) { Text("Excluir") }
+                )
+                .padding(16.dp)
+        ) {
+            Column {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "PAINEL GERAL",
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Black,
+                        color = CyberCyan,
+                        letterSpacing = 1.sp
+                    )
+                    Text(
+                        text = "Resetar",
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = NeonPurple,
+                        modifier = Modifier.clickable { onReset() }
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Column {
+                        Text(
+                            text = "${(progressoGeral * 100).toInt()}%",
+                            fontSize = 32.sp,
+                            fontWeight = FontWeight.Black,
+                            color = NeonLime
+                        )
+                        Text(
+                            text = "Exercícios concluídos hoje",
+                            fontSize = 12.sp,
+                            color = MutedText
+                        )
+                    }
+
+                    Column(horizontalAlignment = Alignment.End) {
+                        Text(
+                            text = "${volumeTotal.toInt()} kg",
+                            fontSize = 24.sp,
+                            fontWeight = FontWeight.Black,
+                            color = WhiteText
+                        )
+                        Text(
+                            text = "Volume total levantado",
+                            fontSize = 12.sp,
+                            color = MutedText
+                        )
                     }
                 }
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                val progressoAnimado by animateFloatAsState(
+                    targetValue = progressoGeral,
+                    animationSpec = tween(600)
+                )
+                LinearProgressIndicator(
+                    progress = { progressoAnimado },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(8.dp)
+                        .clip(CircleShape),
+                    color = NeonLime,
+                    trackColor = Color(0xFF282834)
+                )
+
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = "$concluidos de $totalExercicios exercícios realizados",
+                    fontSize = 11.sp,
+                    color = MutedText,
+                    modifier = Modifier.align(Alignment.End)
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun TreinoCard(
+    treino: Treino,
+    onClick: () -> Unit,
+    onExcluir: () -> Unit
+) {
+    val progressoAnimado by animateFloatAsState(
+        targetValue = treino.progresso,
+        animationSpec = tween(500)
+    )
+
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onClick() },
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = DarkSurface),
+        border = BorderStroke(1.dp, Color(0xFF282834))
+    ) {
+        Column(Modifier.padding(16.dp)) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.Top
+            ) {
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = treino.nome.uppercase(),
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Black,
+                        letterSpacing = 0.5.sp,
+                        color = WhiteText
+                    )
+                    if (treino.descricao.isNotBlank()) {
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Text(
+                            text = treino.descricao,
+                            fontSize = 13.sp,
+                            color = MutedText
+                        )
+                    }
+                }
+                IconButton(
+                    onClick = onExcluir,
+                    modifier = Modifier.size(24.dp)
+                ) {
+                    Text("×", color = ErrorColor, fontSize = 24.sp, fontWeight = FontWeight.Bold)
+                }
+            }
+
+            Spacer(Modifier.height(16.dp))
+
+            LinearProgressIndicator(
+                progress = { progressoAnimado },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(6.dp)
+                    .clip(CircleShape),
+                color = if (treino.progresso == 1f) NeonLime else NeonPurple,
+                trackColor = Color(0xFF282834)
+            )
+
+            Spacer(Modifier.height(8.dp))
+
+            Row(
+                Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "${treino.concluidos}/${treino.totalExercicios} concluídos",
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = if (treino.progresso == 1f) NeonLime else WhiteText
+                )
+
+                Text(
+                    text = "Vol: ${treino.volumeTotal.toInt()} kg",
+                    fontSize = 12.sp,
+                    color = CyberCyan,
+                    fontWeight = FontWeight.Medium
+                )
             }
         }
     }
@@ -126,45 +449,358 @@ private fun ListaTreinos(treinos: List<Treino>, onAbrir: (Treino) -> Unit, onExc
 private fun NovoTreino(onSalvar: (String, String) -> Unit) {
     var nome by remember { mutableStateOf("") }
     var desc by remember { mutableStateOf("") }
-    Column(Modifier.fillMaxSize().padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        OutlinedTextField(nome, { nome = it }, label = { Text("Nome") }, modifier = Modifier.fillMaxWidth())
-        OutlinedTextField(desc, { desc = it }, label = { Text("Descrição") }, modifier = Modifier.fillMaxWidth())
+
+    Column(
+        Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        OutlinedTextField(
+            value = nome,
+            onValueChange = { nome = it },
+            label = { Text("Nome do Treino (ex: Treino A)") },
+            modifier = Modifier.fillMaxWidth(),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = NeonPurple,
+                unfocusedBorderColor = Color(0xFF282834),
+                focusedLabelColor = NeonPurple,
+                unfocusedLabelColor = MutedText,
+                focusedTextColor = WhiteText,
+                unfocusedTextColor = WhiteText
+            )
+        )
+
+        OutlinedTextField(
+            value = desc,
+            onValueChange = { desc = it },
+            label = { Text("Descrição/Foco (ex: Peito e Tríceps)") },
+            modifier = Modifier.fillMaxWidth(),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = NeonPurple,
+                unfocusedBorderColor = Color(0xFF282834),
+                focusedLabelColor = NeonPurple,
+                unfocusedLabelColor = MutedText,
+                focusedTextColor = WhiteText,
+                unfocusedTextColor = WhiteText
+            )
+        )
+
         Button(
             onClick = { if (nome.isNotBlank()) onSalvar(nome, desc) },
-            modifier = Modifier.fillMaxWidth()
-        ) { Text("Salvar") }
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(50.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = NeonPurple),
+            shape = RoundedCornerShape(12.dp)
+        ) {
+            Text("SALVAR TREINO", fontWeight = FontWeight.Bold, letterSpacing = 1.sp)
+        }
     }
 }
 
 @Composable
 private fun DetalheTreino(
     treino: Treino,
+    timerState: RestTimerState,
     onToggle: (Exercicio) -> Unit,
     onRemover: (Exercicio) -> Unit,
-    onAdicionar: (String, Int, Int, Double) -> Unit
+    onAdicionar: (String, Int, Int, Double) -> Unit,
+    onAlterarCarga: (Long, Double) -> Unit,
+    onAlterarReps: (Long, Int) -> Unit,
+    onAlterarSeries: (Long, Int) -> Unit
 ) {
-    Column(Modifier.fillMaxSize().padding(16.dp)) {
-        FormularioExercicio(onAdicionar)
-        Spacer(Modifier.height(16.dp))
-        HorizontalDivider()
-        LazyColumn(
-            Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            contentPadding = PaddingValues(vertical = 12.dp)
+    var mostrarFormulario by remember { mutableStateOf(false) }
+
+    Column(
+        Modifier
+            .fillMaxSize()
+            .padding(horizontal = 16.dp)
+    ) {
+        Spacer(modifier = Modifier.height(8.dp))
+
+        // Check if entire workout is completed
+        val completo = treino.progresso == 1f && treino.totalExercicios > 0
+        AnimatedVisibility(
+            visible = completo,
+            enter = expandVertically() + fadeIn(),
+            exit = shrinkVertically() + fadeOut()
         ) {
-            items(treino.exercicios, key = { it.id }) { ex ->
-                ListItem(
-                    headlineContent = { Text(ex.nome) },
-                    supportingContent = {
-                        Text("${ex.series}x${ex.repeticoes} • ${ex.cargaKg} kg • vol ${ex.volume()}")
-                    },
-                    leadingContent = {
-                        Checkbox(checked = ex.concluido, onCheckedChange = { onToggle(ex) })
-                    },
-                    trailingContent = { TextButton(onClick = { onRemover(ex) }) { Text("Remover") } }
+            CelebrationCard(volume = treino.volumeTotal)
+        }
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "${treino.concluidos}/${treino.totalExercicios} CONCLUÍDOS",
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Black,
+                color = if (completo) NeonLime else CyberCyan,
+                letterSpacing = 1.sp
+            )
+
+            Button(
+                onClick = { mostrarFormulario = !mostrarFormulario },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = if (mostrarFormulario) DarkSurfaceVariant else NeonPurple
+                ),
+                contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp),
+                shape = RoundedCornerShape(8.dp)
+            ) {
+                Text(
+                    text = if (mostrarFormulario) "FECHAR" else "+ ADD EXERCÍCIO",
+                    fontSize = 11.sp,
+                    fontWeight = FontWeight.Bold,
+                    letterSpacing = 0.5.sp
                 )
             }
         }
+
+        AnimatedVisibility(
+            visible = mostrarFormulario,
+            enter = expandVertically() + fadeIn(),
+            exit = shrinkVertically() + fadeOut()
+        ) {
+            Card(
+                shape = RoundedCornerShape(12.dp),
+                border = BorderStroke(1.dp, Color(0xFF282834)),
+                colors = CardDefaults.cardColors(containerColor = DarkSurface),
+                modifier = Modifier.padding(bottom = 12.dp)
+            ) {
+                Column(Modifier.padding(16.dp)) {
+                    FormularioExercicio { n, s, r, c ->
+                        onAdicionar(n, s, r, c)
+                        mostrarFormulario = false
+                    }
+                }
+            }
+        }
+
+        HorizontalDivider(color = Color(0xFF282834), thickness = 1.dp)
+
+        if (treino.exercicios.isEmpty()) {
+            Box(
+                Modifier
+                    .fillMaxWidth()
+                    .weight(1f),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    "Nenhum exercício neste treino.",
+                    color = MutedText,
+                    fontSize = 14.sp
+                )
+            }
+        } else {
+            LazyColumn(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+                contentPadding = PaddingValues(top = 12.dp, bottom = 80.dp)
+            ) {
+                items(treino.exercicios, key = { it.id }) { ex ->
+                    CardExercicioItem(
+                        ex = ex,
+                        onToggle = {
+                            onToggle(ex)
+                            // Auto suggest/start rest timer on completion of a set/exercise
+                            if (!ex.concluido) {
+                                timerState.start(60) // Start standard 60s rest
+                            }
+                        },
+                        onRemover = { onRemover(ex) },
+                        onAlterarCarga = { delta -> onAlterarCarga(ex.id, delta) },
+                        onAlterarReps = { delta -> onAlterarReps(ex.id, delta) },
+                        onAlterarSeries = { delta -> onAlterarSeries(ex.id, delta) }
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun CelebrationCard(volume: Double) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 12.dp),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = Color(0xFF1E291B)),
+        border = BorderStroke(1.dp, NeonLime)
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "🏆 TREINO CONCLUÍDO! 🏆",
+                fontWeight = FontWeight.Black,
+                fontSize = 16.sp,
+                color = NeonLime,
+                letterSpacing = 1.sp
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = "Bom trabalho! Todos os exercícios concluídos.",
+                fontSize = 13.sp,
+                color = WhiteText,
+                textAlign = TextAlign.Center
+            )
+            Text(
+                text = "Volume total levantado: ${volume.toInt()} kg",
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Bold,
+                color = CyberCyan,
+                modifier = Modifier.padding(top = 4.dp)
+            )
+        }
+    }
+}
+
+@Composable
+private fun CardExercicioItem(
+    ex: Exercicio,
+    onToggle: () -> Unit,
+    onRemover: () -> Unit,
+    onAlterarCarga: (Double) -> Unit,
+    onAlterarReps: (Int) -> Unit,
+    onAlterarSeries: (Int) -> Unit
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(12.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = if (ex.concluido) Color(0xFF16161D) else DarkSurface
+        ),
+        border = BorderStroke(
+            width = 1.dp,
+            color = if (ex.concluido) NeonLime.copy(alpha = 0.3f) else Color(0xFF282834)
+        )
+    ) {
+        Column(Modifier.padding(12.dp)) {
+            // Top row with status, title and delete button
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Checkbox(
+                    checked = ex.concluido,
+                    onCheckedChange = { onToggle() },
+                    colors = CheckboxDefaults.colors(
+                        checkedColor = NeonLime,
+                        checkmarkColor = Color.Black,
+                        uncheckedColor = Color(0xFF3E3E50)
+                    )
+                )
+
+                Spacer(modifier = Modifier.width(8.dp))
+
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = ex.nome.uppercase(),
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 14.sp,
+                        color = if (ex.concluido) MutedText else WhiteText,
+                        textDecoration = if (ex.concluido) TextDecoration.LineThrough else TextDecoration.None
+                    )
+                    Text(
+                        text = "Vol: ${ex.volume().toInt()} kg",
+                        fontSize = 11.sp,
+                        color = CyberCyan
+                    )
+                }
+
+                IconButton(
+                    onClick = onRemover,
+                    modifier = Modifier.size(28.dp)
+                ) {
+                    Text("×", color = ErrorColor, fontSize = 24.sp, fontWeight = FontWeight.Bold)
+                }
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+            HorizontalDivider(color = Color(0xFF282834).copy(alpha = 0.5f), thickness = 1.dp)
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // Adjusters Row
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                // Adjuster 1: Series
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text("SÉRIES", fontSize = 9.sp, color = MutedText, fontWeight = FontWeight.Bold)
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        AdjustButton("-") { onAlterarSeries(-1) }
+                        Text(
+                            text = "${ex.series}",
+                            fontWeight = FontWeight.Black,
+                            color = WhiteText,
+                            fontSize = 13.sp,
+                            modifier = Modifier.padding(horizontal = 8.dp)
+                        )
+                        AdjustButton("+") { onAlterarSeries(1) }
+                    }
+                }
+
+                // Adjuster 2: Reps
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text("REPETIÇÕES", fontSize = 9.sp, color = MutedText, fontWeight = FontWeight.Bold)
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        AdjustButton("-") { onAlterarReps(-1) }
+                        Text(
+                            text = "${ex.repeticoes}",
+                            fontWeight = FontWeight.Black,
+                            color = WhiteText,
+                            fontSize = 13.sp,
+                            modifier = Modifier.padding(horizontal = 8.dp)
+                        )
+                        AdjustButton("+") { onAlterarReps(1) }
+                    }
+                }
+
+                // Adjuster 3: Carga
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text("CARGA (KG)", fontSize = 9.sp, color = MutedText, fontWeight = FontWeight.Bold)
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        AdjustButton("-2") { onAlterarCarga(-2.0) }
+                        Text(
+                            text = "${ex.cargaKg.toInt()}",
+                            fontWeight = FontWeight.Black,
+                            color = NeonLime,
+                            fontSize = 13.sp,
+                            modifier = Modifier.padding(horizontal = 6.dp)
+                        )
+                        AdjustButton("+2") { onAlterarCarga(2.0) }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun AdjustButton(text: String, onClick: () -> Unit) {
+    Box(
+        modifier = Modifier
+            .size(24.dp)
+            .clip(RoundedCornerShape(4.dp))
+            .background(DarkSurfaceVariant)
+            .clickable { onClick() },
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = text,
+            color = WhiteText,
+            fontSize = 12.sp,
+            fontWeight = FontWeight.ExtraBold
+        )
     }
 }
 
@@ -175,35 +811,191 @@ private fun FormularioExercicio(onAdicionar: (String, Int, Int, Double) -> Unit)
     var reps by remember { mutableStateOf("10") }
     var carga by remember { mutableStateOf("20") }
 
-    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        OutlinedTextField(nome, { nome = it }, label = { Text("Exercício") }, modifier = Modifier.fillMaxWidth())
+    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        OutlinedTextField(
+            value = nome,
+            onValueChange = { nome = it },
+            label = { Text("Nome do Exercício") },
+            modifier = Modifier.fillMaxWidth(),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = NeonPurple,
+                unfocusedBorderColor = Color(0xFF3E3E50),
+                focusedLabelColor = NeonPurple,
+                unfocusedLabelColor = MutedText,
+                focusedTextColor = WhiteText,
+                unfocusedTextColor = WhiteText
+            )
+        )
+
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             OutlinedTextField(
-                series, { series = it.filter(Char::isDigit) },
-                label = { Text("Séries") }, modifier = Modifier.weight(1f), singleLine = true,
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                value = series,
+                onValueChange = { series = it.filter(Char::isDigit) },
+                label = { Text("Séries") },
+                modifier = Modifier.weight(1f),
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = NeonPurple,
+                    unfocusedBorderColor = Color(0xFF3E3E50),
+                    focusedLabelColor = NeonPurple,
+                    focusedTextColor = WhiteText,
+                    unfocusedTextColor = WhiteText
+                )
             )
             OutlinedTextField(
-                reps, { reps = it.filter(Char::isDigit) },
-                label = { Text("Reps") }, modifier = Modifier.weight(1f), singleLine = true,
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                value = reps,
+                onValueChange = { reps = it.filter(Char::isDigit) },
+                label = { Text("Reps") },
+                modifier = Modifier.weight(1f),
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = NeonPurple,
+                    unfocusedBorderColor = Color(0xFF3E3E50),
+                    focusedLabelColor = NeonPurple,
+                    focusedTextColor = WhiteText,
+                    unfocusedTextColor = WhiteText
+                )
             )
             OutlinedTextField(
-                carga, { carga = it.filter { c -> c.isDigit() || c == '.' || c == ',' } },
-                label = { Text("Carga") }, modifier = Modifier.weight(1f), singleLine = true,
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
+                value = carga,
+                onValueChange = { carga = it.filter { c -> c.isDigit() || c == '.' || c == ',' } },
+                label = { Text("Peso (kg)") },
+                modifier = Modifier.weight(1.2f),
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = NeonPurple,
+                    unfocusedBorderColor = Color(0xFF3E3E50),
+                    focusedLabelColor = NeonPurple,
+                    focusedTextColor = WhiteText,
+                    unfocusedTextColor = WhiteText
+                )
             )
         }
+
         Button(
             onClick = {
                 val s = series.toIntOrNull() ?: 0
                 val r = reps.toIntOrNull() ?: 0
                 val c = carga.replace(',', '.').toDoubleOrNull() ?: 0.0
                 if (nome.isNotBlank() && s > 0 && r > 0) {
-                    onAdicionar(nome, s, r, c); nome = ""
+                    onAdicionar(nome, s, r, c)
+                    nome = ""
                 }
             },
-            modifier = Modifier.fillMaxWidth()
-        ) { Text("Adicionar exercício") }
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(44.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = NeonLime, contentColor = Color.Black),
+            shape = RoundedCornerShape(8.dp)
+        ) {
+            Text("ADICIONAR AO TREINO", fontWeight = FontWeight.Bold, letterSpacing = 0.5.sp)
+        }
     }
 }
+
+@Composable
+private fun RestTimerPill(state: RestTimerState) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 16.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Card(
+            modifier = Modifier
+                .wrapContentWidth()
+                .padding(horizontal = 24.dp),
+            shape = RoundedCornerShape(50.dp),
+            colors = CardDefaults.cardColors(containerColor = DarkSurface),
+            border = BorderStroke(1.dp, CyberCyan.copy(alpha = 0.5f)),
+            elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+        ) {
+            Row(
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                // Circular Timer Indicator
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier.size(36.dp)
+                ) {
+                    CircularProgressIndicator(
+                        progress = {
+                            if (state.totalSeconds > 0) {
+                                state.secondsLeft.toFloat() / state.totalSeconds
+                            } else 0f
+                        },
+                        color = CyberCyan,
+                        strokeWidth = 3.dp,
+                        trackColor = Color(0xFF282834),
+                        modifier = Modifier.fillMaxSize()
+                    )
+                    Text(
+                        text = "${state.secondsLeft}",
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.Black,
+                        color = CyberCyan
+                    )
+                }
+
+                Column {
+                    Text(
+                        text = "DESCANSO",
+                        fontSize = 9.sp,
+                        fontWeight = FontWeight.Black,
+                        color = MutedText,
+                        letterSpacing = 0.5.sp
+                    )
+                    Text(
+                        text = String.format("%02d:%02d", state.secondsLeft / 60, state.secondsLeft % 60),
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Black,
+                        color = WhiteText
+                    )
+                }
+
+                // Control Buttons
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    // +15s
+                    TextButton(
+                        onClick = { state.addTime(15) },
+                        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp)
+                    ) {
+                        Text("+15s", color = NeonLime, fontSize = 11.sp, fontWeight = FontWeight.Bold)
+                    }
+
+                    // Play/Pause
+                    IconButton(
+                        onClick = {
+                            if (state.isRunning) state.pause() else state.resume()
+                        },
+                        modifier = Modifier.size(28.dp)
+                    ) {
+                        Text(
+                            text = if (state.isRunning) "‖" else "▶",
+                            color = WhiteText,
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+
+                    // Close Timer
+                    IconButton(
+                        onClick = { state.stop() },
+                        modifier = Modifier.size(28.dp)
+                    ) {
+                        Text("×", color = ErrorColor, fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                    }
+                }
+            }
+        }
+    }
+}
+

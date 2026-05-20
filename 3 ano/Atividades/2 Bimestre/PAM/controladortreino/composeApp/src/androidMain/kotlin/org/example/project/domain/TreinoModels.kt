@@ -26,4 +26,6 @@ data class Treino(
     val concluidos: Int get() = exercicios.count { it.concluido }
     val progresso: Float
         get() = if (totalExercicios == 0) 0f else concluidos.toFloat() / totalExercicios
+    val volumeTotal: Double get() = exercicios.sumOf { it.volume() }
+    val volumeConcluido: Double get() = exercicios.filter { it.concluido }.sumOf { it.volume() }
 }
