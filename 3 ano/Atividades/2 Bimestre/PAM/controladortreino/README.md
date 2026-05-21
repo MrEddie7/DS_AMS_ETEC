@@ -1,6 +1,6 @@
 # Controlador de Treino
 
-Este projeto é literalmente um simples controlador de treinos
+Este projeto é literalmente um simples aplicativo de controle de treinos
 
 Desenvolvido por Eduardo Cavalcante.
 
