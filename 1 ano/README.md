@@ -1,6 +1,6 @@
 <div align="center">
 
-![Portfólio DS AMS](https://readme-typing-svg.demolab.com?font=Fira+Code&weight=500&size=28&pause=1000&color=FF3131&center=true&width=680&lines=Portf%C3%B3lio:+DS+AMS;Projetos+relacionados+%C3%A0+Etec+Zona+Leste)
+![Portfólio DS AMS](https://readme-typing-svg.demolab.com?font=Fira+Code&weight=500&size=28&pause=1000&color=FF3131&center=true&width=680&lines=Portf%C3%B3lio:+Pasta+1º+Ano.)
 
 ## Linguagens e tecnologias
 
@@ -12,6 +12,6 @@
 
 </div>
 
-![Thanks for the attention!!! :)](https://readme-typing-svg.demolab.com?font=Fira+Code&weight=500&size=22&pause=1000&color=FF3131&center=true&center=true&random=false&width=500&lines=Thanks+for+the+attention;I+will+update+more+later
+![Thanks for the attention!!! :)](https://readme-typing-svg.demolab.com?font=Fira+Code&weight=500&size=22&pause=1000&color=FF3131&center=true&center=true&random=false&width=500&lines=Valeu+por+ver+até+aqui;Isso+concerteza+não+tem+atulizações.
 )
 </div>
