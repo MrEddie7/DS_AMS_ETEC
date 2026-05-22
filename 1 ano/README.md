@@ -1,6 +1,6 @@
 <div align="center">
 
-![Portfólio DS AMS](https://readme-typing-svg.demolab.com?font=Fira+Code&weight=500&size=28&pause=1000&color=FF3131&center=true&width=680&lines=Portf%C3%B3lio:+Pasta+1º+Ano.)
+![Portfólio DS AMS](https://readme-typing-svg.demolab.com?font=Fira+Code&weight=500&size=28&pause=1000&color=FF3131&center=true&width=680&lines=Portf%C3%B3lio:+Pasta+1º+Ano;Referente+ao+ano+de+2024.)
 
 ## Linguagens e tecnologias
 
