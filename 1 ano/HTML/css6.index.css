@@ -1,0 +1,8 @@
+/*plano de fundo em cor cinza*/
+
+h1.d111 {color: blue; text-decoration: underline; text-decoration-color: blue; font-weight: bold;}
+
+p.d111111 {background-color: beige; border-color: red; border-style: solid;text-align: left;}
+
+dd {list-style-image: url(png2.jpeg);}
+dl {list-style-image: url(png1.jpeg);}
