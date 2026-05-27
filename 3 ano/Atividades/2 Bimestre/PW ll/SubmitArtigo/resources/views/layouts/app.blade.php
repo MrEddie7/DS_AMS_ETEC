@@ -47,6 +47,13 @@
                     </a>
                 </li>
                 <li>
+                    <a href="{{ route('submission.index') }}" 
+                       class="nav-link {{ request()->routeIs('submission.index') || request()->routeIs('submission.show') ? 'active' : '' }}" 
+                       id="nav-link-submissions">
+                       Painel
+                    </a>
+                </li>
+                <li>
                     <a href="{{ route('submission.create') }}" 
                        class="nav-link btn-nav {{ request()->routeIs('submission.create') ? 'active' : '' }}" 
                        id="nav-link-submit">
@@ -71,6 +78,7 @@
                 <h4>Navegação</h4>
                 <ul>
                     <li><a href="{{ route('home') }}" id="footer-link-home">Início</a></li>
+                    <li><a href="{{ route('submission.index') }}" id="footer-link-index">Painel de Submissões</a></li>
                     <li><a href="{{ route('about') }}" id="footer-link-about">Sobre a Revista</a></li>
                     <li><a href="{{ route('contact') }}" id="footer-link-contact">Contato</a></li>
                 </ul>
