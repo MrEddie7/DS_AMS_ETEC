@@ -14,6 +14,6 @@
 
 
 
-![Thanks for the attention!!! :)](https://readme-typing-svg.demolab.com?font=Fira+Code&weight=500&size=22&pause=1000&color=FF3131&center=true&center=true&random=false&width=500&lines=Valeu+por+ver+até+aqui;Isso+ainda+tem+atulizações.
+![Thanks for the attention!!! :)](https://readme-typing-svg.demolab.com?font=Fira+Code&weight=500&size=22&pause=1000&color=FF3131&center=true&center=true&random=false&width=500&lines=Valeu+por+ver+até+aqui;Isso+ainda+tem+atulizações....
 )
 </div>
