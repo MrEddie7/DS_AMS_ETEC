@@ -11,7 +11,7 @@
 ![HTML5](https://img.shields.io/badge/html5-%23E34F26.svg?style=for-the-badge&logo=html5&logoColor=white)
 ![CSS3](https://img.shields.io/badge/css3-%231572B6.svg?style=for-the-badge&logo=css3&logoColor=white)
 ![javascript](https://img.shields.io/badge/JavaScript-%23F7DF1E.svg?style=for-the-badge&logo=javascript&logoColor=black)
-![Static Badge](https://img.shields.io/badge/php-%23e20000?style=for-the-badge)
+![PHP](https://img.shields.io/badge/php-%23e20000?style=for-the-badge)
 ![Laravel](https://img.shields.io/badge/Laravel-%23FF2D20.svg?style=for-the-badge&logo=laravel&logoColor=white)
 ![Kotlin](https://img.shields.io/badge/Kotlin-%23F18E33.svg?style=for-the-badge&logo=kotlin&logoColor=white)
 ![PowerShell](https://img.shields.io/badge/PowerShell-%230078D6.svg?style=for-the-badge&logo=powershell&logoColor=white)
