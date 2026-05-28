@@ -20,6 +20,6 @@
 ![SQL](https://img.shields.io/badge/SQL-%23007ACC.svg?style=for-the-badge)
 ![Python](https://img.shields.io/badge/Python-%2314354C.svg?style=for-the-badge&logo=python&logoColor=white)
 
-![Thanks for the attention!!! :)](https://readme-typing-svg.demolab.com?font=Fira+Code&weight=500&size=22&pause=1000&color=FF3131&center=true&center=true&random=false&width=500&lines=Repositório+em+atualização;Veja+Pasta+3°+Ano.
+![Thanks for the attention!!! :)](https://readme-typing-svg.demolab.com?font=Fira+Code&weight=500&size=22&pause=1000&color=FF3131&center=true&center=true&random=false&width=500&lines=Repositório+em+atualização:;Veja+Pasta+3°+Ano.
 )
 </div>
