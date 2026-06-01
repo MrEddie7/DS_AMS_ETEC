@@ -26,6 +26,12 @@ class TreinoDbHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         const val COLUMN_EXERCICIO_REPETICOES = "repeticoes"
         const val COLUMN_EXERCICIO_CARGA = "carga"
         const val COLUMN_EXERCICIO_CONCLUIDO = "concluido"
+
+        // Tabela Usuario
+        const val TABLE_USUARIO = "usuario"
+        const val COLUMN_USUARIO_ID = "id"
+        const val COLUMN_USUARIO_NOME = "usuario"
+        const val COLUMN_USUARIO_SENHA = "senha"
     }
 
     override fun onCreate(db: SQLiteDatabase) {
@@ -50,16 +56,26 @@ class TreinoDbHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             )
         """.trimIndent()
 
+        val createTableUsuario = """
+            CREATE TABLE $TABLE_USUARIO (
+                $COLUMN_USUARIO_ID INTEGER PRIMARY KEY AUTOINCREMENT,
+                $COLUMN_USUARIO_NOME TEXT UNIQUE NOT NULL,
+                $COLUMN_USUARIO_SENHA TEXT NOT NULL
+            )
+        """.trimIndent()
+
         db.execSQL(createTableTreino)
         db.execSQL(createTableExercicio)
+        db.execSQL(createTableUsuario)
 
         // Seed data
         seedData(db)
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-        db.execSQL("DROP TABLE IF EXISTS $TABLE_EXERCICIO")
-        db.execSQL("DROP TABLE IF EXISTS $TABLE_TREINO")
+        db.execSQL("DROP TABLE IF EXISTS ${TABLE_EXERCICIO}")
+        db.execSQL("DROP TABLE IF EXISTS ${TABLE_TREINO}")
+        db.execSQL("DROP TABLE IF EXISTS ${TABLE_USUARIO}")
         onCreate(db)
     }
 
@@ -70,6 +86,13 @@ class TreinoDbHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
     }
 
     fun seedData(db: SQLiteDatabase) {
+        // Seed default user admin/admin
+        val defaultUserValues = ContentValues().apply {
+            put(COLUMN_USUARIO_NOME, "admin")
+            put(COLUMN_USUARIO_SENHA, "admin")
+        }
+        db.insert(TABLE_USUARIO, null, defaultUserValues)
+
         // Treino A
         val tAId = inserirTreinoSeed(db, "Treino A - Peito, Tríceps & Ombro", "Foco em empurrar (Hipertrofia)")
         inserirExercicioSeed(db, tAId, "Supino Reto", 4, 10, 40.0)

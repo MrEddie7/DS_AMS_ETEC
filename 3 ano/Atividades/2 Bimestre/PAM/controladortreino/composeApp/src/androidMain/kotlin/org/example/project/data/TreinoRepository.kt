@@ -239,4 +239,39 @@ class TreinoRepository(context: Context) {
         dbHelper.seedData(db)
         carregarTreinos()
     }
+
+    fun cadastrarUsuario(usuario: String, senha: String): Boolean {
+        val db = dbHelper.writableDatabase
+
+        // Verificar se usuário já existe
+        val cursor = db.query(
+            TreinoDbHelper.TABLE_USUARIO,
+            arrayOf(TreinoDbHelper.COLUMN_USUARIO_ID),
+            "${TreinoDbHelper.COLUMN_USUARIO_NOME} = ?",
+            arrayOf(usuario),
+            null, null, null
+        )
+        val existe = cursor.use { it.count > 0 }
+        if (existe) return false
+
+        // Inserir novo usuário
+        val values = ContentValues().apply {
+            put(TreinoDbHelper.COLUMN_USUARIO_NOME, usuario)
+            put(TreinoDbHelper.COLUMN_USUARIO_SENHA, senha)
+        }
+        val result = db.insert(TreinoDbHelper.TABLE_USUARIO, null, values)
+        return result != -1L
+    }
+
+    fun validarLogin(usuario: String, senha: String): Boolean {
+        val db = dbHelper.readableDatabase
+        val cursor = db.query(
+            TreinoDbHelper.TABLE_USUARIO,
+            arrayOf(TreinoDbHelper.COLUMN_USUARIO_ID),
+            "${TreinoDbHelper.COLUMN_USUARIO_NOME} = ? AND ${TreinoDbHelper.COLUMN_USUARIO_SENHA} = ?",
+            arrayOf(usuario, senha),
+            null, null, null
+        )
+        return cursor.use { it.count > 0 }
+    }
 }

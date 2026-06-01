@@ -33,8 +33,17 @@ import org.example.project.domain.Treino
 import org.example.project.domain.TreinoId
 import android.content.Context
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 
 private sealed interface Tela {
+    data object Splash : Tela
+    data object Login : Tela
     data object Lista : Tela
     data class Detalhe(val id: TreinoId) : Tela
     data object Novo : Tela
@@ -84,7 +93,8 @@ fun ControladorTreinoApp(
     context: Context = LocalContext.current,
     repo: TreinoRepository = remember(context) { TreinoRepository(context.applicationContext) }
 ) {
-    var tela by remember { mutableStateOf<Tela>(Tela.Lista) }
+    var tela by remember { mutableStateOf<Tela>(Tela.Splash) }
+    var usuarioLogado by remember { mutableStateOf<String?>(null) }
     val treinos by repo.treinos.collectAsStateWithLifecycle()
     val timerState = remember { RestTimerState() }
 
@@ -100,106 +110,154 @@ fun ControladorTreinoApp(
     }
 
     ControladorTreinoTheme {
-        Scaffold(
-            topBar = {
-                TopAppBar(
-                    title = {
-                        Text(
-                            text = when (val t = tela) {
-                                is Tela.Lista -> "MEUS TREINOS"
-                                is Tela.Novo -> "NOVO TREINO"
-                                is Tela.Detalhe -> treinos.firstOrNull { it.id == t.id }?.nome?.uppercase() ?: "TREINO"
+        when (val currentTela = tela) {
+            is Tela.Splash -> {
+                SplashScreen {
+                    tela = Tela.Login
+                }
+            }
+            is Tela.Login -> {
+                LoginScreen(repo = repo) { user ->
+                    usuarioLogado = user
+                    tela = Tela.Lista
+                }
+            }
+            else -> {
+                Scaffold(
+                    topBar = {
+                        TopAppBar(
+                            title = {
+                                Text(
+                                    text = when (val t = currentTela) {
+                                        is Tela.Lista -> "MEUS TREINOS"
+                                        is Tela.Novo -> "NOVO TREINO"
+                                        is Tela.Detalhe -> treinos.firstOrNull { it.id == t.id }?.nome?.uppercase() ?: "TREINO"
+                                        else -> "TREINO"
+                                    },
+                                    fontWeight = FontWeight.Black,
+                                    letterSpacing = 1.5.sp,
+                                    fontSize = 18.sp,
+                                    color = WhiteText
+                                )
                             },
-                            fontWeight = FontWeight.Black,
-                            letterSpacing = 1.5.sp,
-                            fontSize = 20.sp,
-                            color = WhiteText
+                            navigationIcon = {
+                                if (currentTela !is Tela.Lista) {
+                                    TextButton(
+                                        onClick = { tela = Tela.Lista }
+                                    ) {
+                                        Text(
+                                            text = "VOLTAR",
+                                            color = CyberCyan,
+                                            fontWeight = FontWeight.Bold,
+                                            letterSpacing = 1.sp
+                                        )
+                                    }
+                                }
+                            },
+                            actions = {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                    modifier = Modifier.padding(end = 8.dp)
+                                ) {
+                                    usuarioLogado?.let { user ->
+                                        Text(
+                                            text = user.uppercase(),
+                                            fontSize = 11.sp,
+                                            fontWeight = FontWeight.Black,
+                                            color = CyberCyan,
+                                            letterSpacing = 0.5.sp
+                                        )
+                                    }
+                                    TextButton(
+                                        onClick = {
+                                            usuarioLogado = null
+                                            tela = Tela.Login
+                                        },
+                                        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp)
+                                    ) {
+                                        Text(
+                                            text = "SAIR",
+                                            color = ErrorColor,
+                                            fontSize = 11.sp,
+                                            fontWeight = FontWeight.Bold,
+                                            letterSpacing = 1.sp
+                                        )
+                                    }
+                                }
+                            },
+                            colors = TopAppBarDefaults.topAppBarColors(
+                                containerColor = DarkBackground,
+                                titleContentColor = WhiteText
+                            )
                         )
                     },
-                    navigationIcon = {
-                        if (tela !is Tela.Lista) {
-                            TextButton(
-                                onClick = { tela = Tela.Lista }
-                            ) {
-                                Text(
-                                    text = "VOLTAR",
-                                    color = CyberCyan,
-                                    fontWeight = FontWeight.Bold,
-                                    letterSpacing = 1.sp
-                                )
-                            }
+                    floatingActionButton = {
+                        if (currentTela is Tela.Lista) {
+                            ExtendedFloatingActionButton(
+                                text = { Text("CRIAR TREINO", fontWeight = FontWeight.Bold, letterSpacing = 1.sp) },
+                                icon = { Text("+", fontSize = 24.sp, fontWeight = FontWeight.Bold) },
+                                onClick = { tela = Tela.Novo },
+                                containerColor = NeonPurple,
+                                contentColor = Color.White,
+                                shape = RoundedCornerShape(12.dp)
+                            )
                         }
                     },
-                    colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = DarkBackground,
-                        titleContentColor = WhiteText
-                    )
-                )
-            },
-            floatingActionButton = {
-                if (tela is Tela.Lista) {
-                    ExtendedFloatingActionButton(
-                        text = { Text("CRIAR TREINO", fontWeight = FontWeight.Bold, letterSpacing = 1.sp) },
-                        icon = { Text("+", fontSize = 24.sp, fontWeight = FontWeight.Bold) },
-                        onClick = { tela = Tela.Novo },
-                        containerColor = NeonPurple,
-                        contentColor = Color.White,
-                        shape = RoundedCornerShape(12.dp)
-                    )
-                }
-            },
-            bottomBar = {
-                // Rest Timer Floating Pill at the bottom of the screen
-                AnimatedVisibility(
-                    visible = timerState.isVisible,
-                    enter = slideInVertically(initialOffsetY = { it }) + fadeIn(),
-                    exit = slideOutVertically(targetOffsetY = { it }) + fadeOut()
-                ) {
-                    RestTimerPill(state = timerState)
-                }
-            },
-            containerColor = DarkBackground
-        ) { padding ->
-            Box(
-                Modifier
-                    .fillMaxSize()
-                    .padding(padding)
-                    .background(DarkBackground)
-            ) {
-                when (val t = tela) {
-                    is Tela.Lista -> ListaTreinos(
-                        treinos = treinos,
-                        onAbrir = { tela = Tela.Detalhe(it.id) },
-                        onExcluir = { repo.removerTreino(it.id) },
-                        onReset = { repo.redefinirTemplates() }
-                    )
-                    is Tela.Novo -> NovoTreino(onSalvar = { n, d ->
-                        repo.adicionarTreino(n.trim(), d.trim())
-                        tela = Tela.Lista
-                    })
-                    is Tela.Detalhe -> {
-                        val treino = treinos.firstOrNull { it.id == t.id }
-                        if (treino == null) {
-                            tela = Tela.Lista
-                        } else {
-                            DetalheTreino(
-                                treino = treino,
-                                timerState = timerState,
-                                onToggle = { repo.alternarConclusao(treino.id, it.id) },
-                                onRemover = { repo.removerExercicio(treino.id, it.id) },
-                                onAdicionar = { n, s, r, c ->
-                                    repo.adicionarExercicio(treino.id, n.trim(), s, r, c)
-                                },
-                                onAlterarCarga = { exId, delta ->
-                                    repo.alterarCarga(treino.id, exId, delta)
-                                },
-                                onAlterarReps = { exId, delta ->
-                                    repo.alterarRepeticoes(treino.id, exId, delta)
-                                },
-                                onAlterarSeries = { exId, delta ->
-                                    repo.alterarSeries(treino.id, exId, delta)
-                                }
+                    bottomBar = {
+                        AnimatedVisibility(
+                            visible = timerState.isVisible,
+                            enter = slideInVertically(initialOffsetY = { it }) + fadeIn(),
+                            exit = slideOutVertically(targetOffsetY = { it }) + fadeOut()
+                        ) {
+                            RestTimerPill(state = timerState)
+                        }
+                    },
+                    containerColor = DarkBackground
+                ) { padding ->
+                    Box(
+                        Modifier
+                            .fillMaxSize()
+                            .padding(padding)
+                            .background(DarkBackground)
+                    ) {
+                        when (currentTela) {
+                            is Tela.Lista -> ListaTreinos(
+                                treinos = treinos,
+                                onAbrir = { tela = Tela.Detalhe(it.id) },
+                                onExcluir = { repo.removerTreino(it.id) },
+                                onReset = { repo.redefinirTemplates() }
                             )
+                            is Tela.Novo -> NovoTreino(onSalvar = { n, d ->
+                                repo.adicionarTreino(n.trim(), d.trim())
+                                tela = Tela.Lista
+                            })
+                            is Tela.Detalhe -> {
+                                val treino = treinos.firstOrNull { it.id == currentTela.id }
+                                if (treino == null) {
+                                    tela = Tela.Lista
+                                } else {
+                                    DetalheTreino(
+                                        treino = treino,
+                                        timerState = timerState,
+                                        onToggle = { repo.alternarConclusao(treino.id, it.id) },
+                                        onRemover = { repo.removerExercicio(treino.id, it.id) },
+                                        onAdicionar = { n, s, r, c ->
+                                            repo.adicionarExercicio(treino.id, n.trim(), s, r, c)
+                                        },
+                                        onAlterarCarga = { exId, delta ->
+                                            repo.alterarCarga(treino.id, exId, delta)
+                                        },
+                                        onAlterarReps = { exId, delta ->
+                                            repo.alterarRepeticoes(treino.id, exId, delta)
+                                        },
+                                        onAlterarSeries = { exId, delta ->
+                                            repo.alterarSeries(treino.id, exId, delta)
+                                        }
+                                    )
+                                }
+                            }
+                            else -> {}
                         }
                     }
                 }
@@ -998,4 +1056,437 @@ private fun RestTimerPill(state: RestTimerState) {
         }
     }
 }
+
+@Composable
+private fun SplashScreen(onTimeout: () -> Unit) {
+    val infiniteTransition = rememberInfiniteTransition(label = "pulse")
+    val scale by infiniteTransition.animateFloat(
+        initialValue = 0.9f,
+        targetValue = 1.1f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(1000),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "scale"
+    )
+
+    LaunchedEffect(Unit) {
+        delay(2500L) // Wait 2.5 seconds
+        onTimeout()
+    }
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(DarkBackground),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            // Pulsing emblem
+            Box(
+                modifier = Modifier
+                    .size(100.dp)
+                    .scale(scale)
+                    .clip(CircleShape)
+                    .background(
+                        Brush.radialGradient(
+                            colors = listOf(NeonPurple.copy(alpha = 0.6f), Color.Transparent)
+                        )
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "⚡",
+                    fontSize = 48.sp,
+                    color = NeonLime
+                )
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            Text(
+                text = "CONTROLADOR DE TREINO",
+                fontSize = 22.sp,
+                fontWeight = FontWeight.Black,
+                color = WhiteText,
+                letterSpacing = 2.sp
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Text(
+                text = "SUPERE SEUS LIMITES",
+                fontSize = 11.sp,
+                fontWeight = FontWeight.Bold,
+                color = CyberCyan,
+                letterSpacing = 3.sp
+            )
+
+            Spacer(modifier = Modifier.height(60.dp))
+
+            CircularProgressIndicator(
+                color = NeonLime,
+                strokeWidth = 3.dp,
+                modifier = Modifier.size(28.dp)
+            )
+        }
+    }
+}
+
+@Composable
+private fun LoginScreen(
+    repo: TreinoRepository,
+    onLoginSuccess: (String) -> Unit
+) {
+    var isLoginTab by remember { mutableStateOf(true) }
+
+    // Input states for Login
+    var loginUser by remember { mutableStateOf("") }
+    var loginPassword by remember { mutableStateOf("") }
+
+    // Input states for Register
+    var regUser by remember { mutableStateOf("") }
+    var regPassword by remember { mutableStateOf("") }
+    var regConfirmPassword by remember { mutableStateOf("") }
+
+    // Password visibility toggles
+    var loginPasswordVisible by remember { mutableStateOf(false) }
+    var regPasswordVisible by remember { mutableStateOf(false) }
+    var regConfirmPasswordVisible by remember { mutableStateOf(false) }
+
+    // Error and Success messages
+    var errorMessage by remember { mutableStateOf<String?>(null) }
+    var successMessage by remember { mutableStateOf<String?>(null) }
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(DarkBackground),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            // Mini Header
+            Box(
+                modifier = Modifier
+                    .size(60.dp)
+                    .clip(CircleShape)
+                    .background(DarkSurface),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "⚡",
+                    fontSize = 28.sp,
+                    color = NeonLime
+                )
+            }
+
+            Text(
+                text = "CONTROLADOR DE TREINO",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Black,
+                color = WhiteText,
+                letterSpacing = 1.sp
+            )
+            Text(
+                text = if (isLoginTab) "Acesse sua conta para começar" else "Crie sua conta local",
+                fontSize = 12.sp,
+                color = MutedText,
+                textAlign = TextAlign.Center
+            )
+
+            Spacer(modifier = Modifier.height(4.dp))
+
+            // Card Container
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(16.dp),
+                colors = CardDefaults.cardColors(containerColor = DarkSurface),
+                border = BorderStroke(1.dp, Color(0xFF282834))
+            ) {
+                Column(
+                    modifier = Modifier.padding(20.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    // Tab Headers
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceEvenly
+                    ) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier
+                                .weight(1f)
+                                .clickable {
+                                    isLoginTab = true
+                                    errorMessage = null
+                                    successMessage = null
+                                }
+                                .padding(vertical = 8.dp)
+                        ) {
+                            Text(
+                                text = "ENTRAR",
+                                fontSize = 13.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = if (isLoginTab) CyberCyan else MutedText
+                            )
+                            Spacer(modifier = Modifier.height(4.dp))
+                            Box(
+                                modifier = Modifier
+                                    .height(2.dp)
+                                    .fillMaxWidth(0.5f)
+                                    .background(if (isLoginTab) CyberCyan else Color.Transparent)
+                            )
+                        }
+
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier
+                                .weight(1f)
+                                .clickable {
+                                    isLoginTab = false
+                                    errorMessage = null
+                                    successMessage = null
+                                }
+                                .padding(vertical = 8.dp)
+                        ) {
+                            Text(
+                                text = "CADASTRAR",
+                                fontSize = 13.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = if (!isLoginTab) NeonPurple else MutedText
+                            )
+                            Spacer(modifier = Modifier.height(4.dp))
+                            Box(
+                                modifier = Modifier
+                                    .height(2.dp)
+                                    .fillMaxWidth(0.5f)
+                                    .background(if (!isLoginTab) NeonPurple else Color.Transparent)
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(4.dp))
+
+                    // Messages
+                    errorMessage?.let { msg ->
+                        Text(
+                            text = msg,
+                            color = ErrorColor,
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.fillMaxWidth(),
+                            textAlign = TextAlign.Center
+                        )
+                    }
+
+                    successMessage?.let { msg ->
+                        Text(
+                            text = msg,
+                            color = NeonLime,
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.fillMaxWidth(),
+                            textAlign = TextAlign.Center
+                        )
+                    }
+
+                    if (isLoginTab) {
+                        // Login fields
+                        OutlinedTextField(
+                            value = loginUser,
+                            onValueChange = { loginUser = it },
+                            label = { Text("Nome de Usuário") },
+                            modifier = Modifier.fillMaxWidth(),
+                            singleLine = true,
+                            colors = OutlinedTextFieldDefaults.colors(
+                                focusedBorderColor = CyberCyan,
+                                unfocusedBorderColor = Color(0xFF282834),
+                                focusedLabelColor = CyberCyan,
+                                focusedTextColor = WhiteText,
+                                unfocusedTextColor = WhiteText
+                            )
+                        )
+
+                        OutlinedTextField(
+                            value = loginPassword,
+                            onValueChange = { loginPassword = it },
+                            label = { Text("Senha") },
+                            modifier = Modifier.fillMaxWidth(),
+                            singleLine = true,
+                            visualTransformation = if (loginPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                            trailingIcon = {
+                                Text(
+                                    text = if (loginPasswordVisible) "Ocultar" else "Mostrar",
+                                    fontSize = 11.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = CyberCyan,
+                                    modifier = Modifier
+                                        .clickable { loginPasswordVisible = !loginPasswordVisible }
+                                        .padding(8.dp)
+                                )
+                            },
+                            colors = OutlinedTextFieldDefaults.colors(
+                                focusedBorderColor = CyberCyan,
+                                unfocusedBorderColor = Color(0xFF282834),
+                                focusedLabelColor = CyberCyan,
+                                focusedTextColor = WhiteText,
+                                unfocusedTextColor = WhiteText
+                            )
+                        )
+
+                        Spacer(modifier = Modifier.height(4.dp))
+
+                        Button(
+                            onClick = {
+                                val u = loginUser.trim()
+                                val p = loginPassword.trim()
+                                if (u.isBlank() || p.isBlank()) {
+                                    errorMessage = "Preencha todos os campos!"
+                                } else {
+                                    val logou = repo.validarLogin(u, p)
+                                    if (logou) {
+                                        onLoginSuccess(u)
+                                    } else {
+                                        errorMessage = "Usuário ou senha incorretos."
+                                    }
+                                }
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(48.dp),
+                            colors = ButtonDefaults.buttonColors(containerColor = CyberCyan, contentColor = Color.Black),
+                            shape = RoundedCornerShape(12.dp)
+                        ) {
+                            Text("ENTRAR", fontWeight = FontWeight.Bold, letterSpacing = 1.sp)
+                        }
+                    } else {
+                        // Register fields
+                        OutlinedTextField(
+                            value = regUser,
+                            onValueChange = { regUser = it },
+                            label = { Text("Nome de Usuário") },
+                            modifier = Modifier.fillMaxWidth(),
+                            singleLine = true,
+                            colors = OutlinedTextFieldDefaults.colors(
+                                focusedBorderColor = NeonPurple,
+                                unfocusedBorderColor = Color(0xFF282834),
+                                focusedLabelColor = NeonPurple,
+                                focusedTextColor = WhiteText,
+                                unfocusedTextColor = WhiteText
+                            )
+                        )
+
+                        OutlinedTextField(
+                            value = regPassword,
+                            onValueChange = { regPassword = it },
+                            label = { Text("Nova Senha") },
+                            modifier = Modifier.fillMaxWidth(),
+                            singleLine = true,
+                            visualTransformation = if (regPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                            trailingIcon = {
+                                Text(
+                                    text = if (regPasswordVisible) "Ocultar" else "Mostrar",
+                                    fontSize = 11.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = NeonPurple,
+                                    modifier = Modifier
+                                        .clickable { regPasswordVisible = !regPasswordVisible }
+                                        .padding(8.dp)
+                                )
+                            },
+                            colors = OutlinedTextFieldDefaults.colors(
+                                focusedBorderColor = NeonPurple,
+                                unfocusedBorderColor = Color(0xFF282834),
+                                focusedLabelColor = NeonPurple,
+                                focusedTextColor = WhiteText,
+                                unfocusedTextColor = WhiteText
+                            )
+                        )
+
+                        OutlinedTextField(
+                            value = regConfirmPassword,
+                            onValueChange = { regConfirmPassword = it },
+                            label = { Text("Confirmar Senha") },
+                            modifier = Modifier.fillMaxWidth(),
+                            singleLine = true,
+                            visualTransformation = if (regConfirmPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                            trailingIcon = {
+                                Text(
+                                    text = if (regConfirmPasswordVisible) "Ocultar" else "Mostrar",
+                                    fontSize = 11.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = NeonPurple,
+                                    modifier = Modifier
+                                        .clickable { regConfirmPasswordVisible = !regConfirmPasswordVisible }
+                                        .padding(8.dp)
+                                )
+                            },
+                            colors = OutlinedTextFieldDefaults.colors(
+                                focusedBorderColor = NeonPurple,
+                                unfocusedBorderColor = Color(0xFF282834),
+                                focusedLabelColor = NeonPurple,
+                                focusedTextColor = WhiteText,
+                                unfocusedTextColor = WhiteText
+                            )
+                        )
+
+                        Spacer(modifier = Modifier.height(4.dp))
+
+                        Button(
+                            onClick = {
+                                val u = regUser.trim()
+                                val p = regPassword.trim()
+                                val cp = regConfirmPassword.trim()
+
+                                when {
+                                    u.isBlank() || p.isBlank() || cp.isBlank() -> {
+                                        errorMessage = "Preencha todos os campos!"
+                                    }
+                                    p != cp -> {
+                                        errorMessage = "As senhas não coincidem!"
+                                    }
+                                    p.length < 4 -> {
+                                        errorMessage = "A senha deve ter pelo menos 4 caracteres!"
+                                    }
+                                    else -> {
+                                        val cadastrou = repo.cadastrarUsuario(u, p)
+                                        if (cadastrou) {
+                                            successMessage = "Conta cadastrada com sucesso!"
+                                            errorMessage = null
+                                            // Reset inputs
+                                            regUser = ""
+                                            regPassword = ""
+                                            regConfirmPassword = ""
+                                            // Auto switch to login tab
+                                            isLoginTab = true
+                                        } else {
+                                            errorMessage = "Usuário já cadastrado!"
+                                        }
+                                    }
+                                }
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(48.dp),
+                            colors = ButtonDefaults.buttonColors(containerColor = NeonPurple, contentColor = Color.White),
+                            shape = RoundedCornerShape(12.dp)
+                        ) {
+                            Text("CADASTRAR", fontWeight = FontWeight.Bold, letterSpacing = 1.sp)
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
 
