@@ -20,9 +20,9 @@ Route::get('/dashboard', function () {
 
 // Authenticated routes
 Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('blade.profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('blade.profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('blade.profile.destroy');
 
     // Grades (Notas) routes
     Route::get('/dashboard/grades', [GradeController::class, 'index'])->name('grades.index');

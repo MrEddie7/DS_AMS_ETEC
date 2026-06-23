@@ -1,0 +1,41 @@
+## Ações pendentes para concluir o projeto
+
+1. **Iniciar o servidor Laravel**
+   - Executar `php artisan serve` no diretório raiz do projeto.
+   - Abrir o navegador em `http://127.0.0.1:8000` e verificar se a aplicação carrega corretamente com os assets recém‑gerados.
+
+2. **Verificar variáveis de ambiente**
+   - Certificar‑se de que o arquivo `.env` contém as configurações corretas (APP_URL, DB_CONNECTION, DB_DATABASE, etc.).
+   - Caso ainda não tenha sido criado, copiar `.env.example` para `.env` e rodar `php artisan key:generate`.
+
+3. **Executar migrações e seeders (se ainda não foram aplicados)**
+   - `php artisan migrate --seed`
+   - Garantir que o banco de dados (sqlite ou outro) está configurado e acessível.
+
+4. **Testes de integração**
+   - Executar a suíte de testes novamente: `php artisan test --compact`.
+   - Verificar se todos os testes continuam passando após a inicialização do servidor.
+
+5. **Ambiente de desenvolvimento local** (opcional)
+   - Para desenvolvimento com hot‑reload, iniciar o Vite em modo dev:
+     ```bash
+     npm run dev
+     ```
+   - Manter o processo rodando simultaneamente ao `php artisan serve`.
+
+6. **Implantação (opcional)**
+   - Se desejar publicar a aplicação, usar a ferramenta de *Laravel Cloud* (`cloud` CLI) para criar um ambiente, provisionar banco de dados, e fazer deploy.
+   - Consultar a skill `deploying‑laravel‑cloud` para detalhes de como executar o deploy.
+
+7. **Ajustes de UI/UX** (opcional)
+   - Revisar os componentes Vue gerados e aplicar estilos adicionais (Tailwind, animações) conforme necessário.
+   - Testar fluxos de usuário críticos (login, registro, navegação) no navegador.
+
+**Resumo:**
+- Iniciar o servidor (`php artisan serve`).
+- Verificar `.env` e chave da aplicação.
+- Aplicar migrações/seeders.
+- Rodar testes.
+- (Opcional) iniciar Vite em dev e/ou implantar usando Laravel Cloud.
+
+Essas etapas garantirão que a aplicação esteja funcional localmente e pronta para ser implantada.

@@ -18,3 +18,4 @@ class Event extends Model
             'date' => 'datetime',
         ];
     }
+}
