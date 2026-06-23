@@ -1,14 +1,12 @@
 -- ============================================================================
--- PROJETO BANCO DE DADOS STREAMFLOW (UNIFICADO E COMPLETO)
+-- PROJETO BANCO DE DADOS STREAMFLOW 
 -- SGBD: MariaDB / MySQL (Compatível com MariaDB 10.2+ e MySQL 8.0+)
--- Autor: Arquiteto e Engenheiro de Dados
 -- ============================================================================
 
--- Criação e inicialização do banco de dados em ambiente limpo
 CREATE DATABASE IF NOT EXISTS streamflow;
 USE streamflow;
 
--- Desativa checagem de FKs para permitir recriação das tabelas
+-- Desativa checagem de FKs para permitir recriação das tabelas sem conflitos
 SET FOREIGN_KEY_CHECKS = 0;
 DROP TABLE IF EXISTS historicos_reproducao;
 DROP TABLE IF EXISTS filmes;
@@ -230,12 +228,12 @@ GROUP BY a.id, a.data_nascimento, a.uf;
 -- SEÇÃO 5: POLÍTICA DE SEGURANÇA E PRIVILÉGIOS (RBAC)
 -- ============================================================================
 
--- Criação de Perfis/Usuários se não existirem
+-- Criação de Usuários se não existirem
 CREATE USER IF NOT EXISTS 'app_user'@'%' IDENTIFIED BY 'StreamFlow_App_Secure_2026';
 CREATE USER IF NOT EXISTS 'auditor_user'@'%' IDENTIFIED BY 'StreamFlow_Audit_Read_2026';
 CREATE USER IF NOT EXISTS 'analista_dados_user'@'%' IDENTIFIED BY 'StreamFlow_Analyst_Secure_2026';
 
--- Concessão de Privilégios para 'app_user' (CRUD operacional)
+-- Concessão de Privilégios para 'app_user' (CRUD operacional do ecossistema do app)
 GRANT SELECT, INSERT, UPDATE, DELETE ON assinantes TO 'app_user'@'%';
 GRANT SELECT, INSERT, UPDATE, DELETE ON perfis TO 'app_user'@'%';
 GRANT SELECT, INSERT, UPDATE, DELETE ON produtoras TO 'app_user'@'%';
@@ -243,10 +241,10 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON series TO 'app_user'@'%';
 GRANT SELECT, INSERT, UPDATE, DELETE ON videos TO 'app_user'@'%';
 GRANT SELECT, INSERT, UPDATE, DELETE ON filmes TO 'app_user'@'%';
 GRANT SELECT, INSERT, UPDATE, DELETE ON episodios TO 'app_user'@'%';
--- Permissão Restrita nos Logs: Sem UPDATE ou DELETE
+-- Permissão Restrita nos Logs para a aplicação: Sem UPDATE ou DELETE (Garante imutabilidade no código)
 GRANT SELECT, INSERT ON historicos_reproducao TO 'app_user'@'%';
 
--- Concessão de Privilégios para 'auditor_user' (Leitura restrita de logs)
+-- Concessão de Privilégios para 'auditor_user' (Leitura restrita de logs e catálogo - sem acesso a assinantes)
 GRANT SELECT ON historicos_reproducao TO 'auditor_user'@'%';
 GRANT SELECT ON videos TO 'auditor_user'@'%';
 GRANT SELECT ON filmes TO 'auditor_user'@'%';
@@ -254,17 +252,14 @@ GRANT SELECT ON episodios TO 'auditor_user'@'%';
 GRANT SELECT ON series TO 'auditor_user'@'%';
 GRANT SELECT ON produtoras TO 'auditor_user'@'%';
 GRANT SELECT ON perfis TO 'auditor_user'@'%';
-REVOKE ALL PRIVILEGES ON assinantes FROM 'auditor_user'@'%';
 
--- Concessão de Privilégios para 'analista_dados_user' (BI com restrição LGPD)
+-- Concessão de Privilégios para 'analista_dados_user' (BI estritamente sob as regras da LGPD)
 GRANT SELECT ON vw_analise_engajamento_lgpd TO 'analista_dados_user'@'%';
 GRANT SELECT ON videos TO 'analista_dados_user'@'%';
 GRANT SELECT ON filmes TO 'analista_dados_user'@'%';
 GRANT SELECT ON episodios TO 'analista_dados_user'@'%';
 GRANT SELECT ON series TO 'analista_dados_user'@'%';
 GRANT SELECT ON produtoras TO 'analista_dados_user'@'%';
-REVOKE ALL PRIVILEGES ON assinantes FROM 'analista_dados_user'@'%';
-REVOKE ALL PRIVILEGES ON perfis FROM 'analista_dados_user'@'%';
 
 FLUSH PRIVILEGES;
 
@@ -279,7 +274,7 @@ INSERT INTO assinantes (nome, email, cpf, data_nascimento, uf, dados_pagamento) 
 ('Maria Oliveira', 'maria.oliveira@email.com', '55566677788', '1999-09-15', 'RJ', 'Pix Chave Aleatória'),
 ('Carlos Souza', 'carlos.souza@email.com', '99988877766', '2005-02-28', 'MG', 'Boleto Bancário');
 
--- Inserindo Perfis (João Silva adiciona 5 perfis)
+-- Inserindo Perfis (João Silva adiciona o limite máximo de 5 perfis)
 INSERT INTO perfis (assinante_id, nome_exibicao, preferencias) VALUES
 (1, 'João Principal', 'Sci-Fi, Ação'),
 (1, 'Ana (Esposa)', 'Drama, Romance'),
@@ -305,9 +300,9 @@ INSERT INTO series (titulo, sinopse, produtora_id) VALUES
 
 -- Inserindo Vídeos na tabela base (CTI)
 INSERT INTO videos (titulo, duracao_segundos, tipo) VALUES
-('The Batman', 10800, 'filme'),     -- ID 1
-('Inception', 8880, 'filme'),        -- ID 2
-('O Hobbit', 11400, 'filme'),        -- ID 3
+('The Batman', 10800, 'filme'),             -- ID 1
+('Inception', 8880, 'filme'),               -- ID 2
+('O Hobbit', 11400, 'filme'),               -- ID 3
 ('Stranger Things S01E01', 3000, 'episodio'), -- ID 4
 ('Stranger Things S01E02', 3300, 'episodio'), -- ID 5
 ('Breaking Bad S01E01', 3500, 'episodio');     -- ID 6
@@ -325,7 +320,6 @@ INSERT INTO episodios (id, serie_id, numero_temporada, numero_episodio, sinopse)
 (6, 2, 1, 1, 'Walter White recebe um diagnóstico chocante.');
 
 -- Inserindo Histórico de Reprodução
--- Dados que acumulam visualizações normais e simulação de consumo massivo
 INSERT INTO historicos_reproducao (perfil_id, video_id, tempo_assistido_segundos, concluido, ip_conexao, dispositivo, assistido_em) VALUES
 -- João Principal (ID 1) assistindo The Batman (ID 1) - Não concluído
 (1, 1, 5000, FALSE, '192.168.1.10', 'SmartTV', '2026-06-10 20:00:00'),
@@ -341,10 +335,10 @@ INSERT INTO historicos_reproducao (perfil_id, video_id, tempo_assistido_segundos
 -- Maria User (ID 6) assistindo Stranger Things S01E01 - Concluído
 (6, 4, 3000, TRUE, '200.100.50.25', 'Web', '2026-06-15 09:15:00'),
 
--- Simulação de 5013 horas de consumo Warner Bros (ID 1) em Junho/2026
+-- Simulação de consumo massivo Warner Bros (ID 1) para teste de faturamento (> 5000 horas)
 (7, 1, 18050000, FALSE, '177.80.20.10', 'Web', '2026-06-05 10:00:00'),
 
--- Simulação de 1000 horas de consumo Netflix (ID 2) em Junho/2026
+-- Simulação de consumo Netflix (ID 2) em Junho/2026
 (2, 5, 3600000, FALSE, '192.168.1.20', 'Smartphone', '2026-06-06 15:00:00');
 
 
@@ -353,7 +347,7 @@ INSERT INTO historicos_reproducao (perfil_id, video_id, tempo_assistido_segundos
 -- ============================================================================
 
 -- A. Relatório 1: Painel "Continuar Assistindo" da Tela Inicial
--- Seleciona apenas a linha mais recente de cada vídeo que o perfil 1 não terminou
+-- Seleciona apenas a linha de progresso mais recente de cada vídeo não finalizado do perfil 1
 SELECT 
     sub.video_id,
     sub.titulo,
@@ -381,7 +375,7 @@ WHERE sub.rn = 1
 ORDER BY sub.ultimo_acesso DESC;
 
 -- B. Relatório 2: Relatório de Cobrança dos Estúdios/Produtoras (BI)
--- Filtra o total assistido das produtoras em Junho/2026 que ultrapassou 5000 horas
+-- Agrega horas consumidas e filtra produtoras parceiras com mais de 5000 horas em Junho/2026
 SELECT 
     p.nome AS produtora_parceira,
     ROUND(SUM(h.tempo_assistido_segundos) / 60.0, 2) AS total_minutos_consumidos,
@@ -395,10 +389,10 @@ JOIN produtoras p ON p.id = COALESCE(f.produtora_id, s.produtora_id)
 WHERE h.assistido_em >= '2026-06-01 00:00:00' 
   AND h.assistido_em < '2026-07-01 00:00:00'
 GROUP BY p.id, p.nome
-HAVING SUM(h.tempo_assistido_segundos) / 3600.0 > 5000
+HAVING total_horas_consumidas > 5000
 ORDER BY total_horas_consumidas DESC;
 
--- C. Relatório 3: Auditoria de Tráfego por Região
+-- C. Relatório 3: Auditoria de Tráfego por Região e Dispositivo
 SELECT 
     a.uf AS estado,
     h.dispositivo AS tipo_dispositivo,
@@ -410,28 +404,26 @@ JOIN assinantes a ON p.assinante_id = a.id
 GROUP BY a.uf, h.dispositivo
 ORDER BY a.uf ASC, total_visualizacoes_iniciadas DESC;
 
--- D. Visualização da View LGPD
+-- D. Visualização da View de Governança e Privacidade LGPD
 SELECT * FROM vw_analise_engajamento_lgpd;
 
 
 -- ============================================================================
 -- SEÇÃO 8: DIRETRIZES PARA CENÁRIOS DE TESTE E AUDITORIA (COMENTADOS)
 -- ============================================================================
--- As instruções abaixo validam as restrições e triggers criados.
--- Para executar cada teste, copie o respectivo comando e rode no console do banco.
+-- Para validar a resiliência do esquema e das triggers, descomente e execute:
 
--- TESTE 1: Limite de 5 Perfis Ativos por Assinante (DEVE FALHAR)
--- O assinante 1 já tem 5 perfis. A query abaixo deve disparar erro SQLSTATE 45000.
--- INSERT INTO perfis (assinante_id, nome_exibicao, preferencias) VALUES (1, 'Tio Patinhas', 'Finanças');
+-- TESTE 1: Limite de 5 Perfis Ativos por Assinante (DEVE FALHAR - Erro 45000)
+-- INSERT INTO perfis (assinante_id, nome_exibicao, preferencias) VALUES (1, 'Perfil Extra', 'Ação');
 
--- TESTE 2: Imutabilidade do Histórico (DEVE FALHAR)
--- A alteração ou exclusão de histórico deve disparar erro SQLSTATE 45000.
--- UPDATE historicos_reproducao SET tempo_assistido_segundos = 500 WHERE id = 1;
+-- TESTE 2: Imutabilidade do Histórico - Bloqueio de UPDATE (DEVE FALHAR - Erro 45000)
+-- UPDATE historicos_reproducao SET tempo_assistido_segundos = 9999 WHERE id = 1;
+
+-- TESTE 3: Imutabilidade do Histórico - Bloqueio de DELETE (DEVE FALHAR - Erro 45000)
 -- DELETE FROM historicos_reproducao WHERE id = 1;
 
--- TESTE 3: Integridade referencial sobre catálogo (DEVE FALHAR)
--- Não é permitido deletar fisicamente um vídeo que já possui histórico associado.
+-- TESTE 4: Integridade referencial sobre catálogo ativo (DEVE FALHAR - Restrição FK)
 -- DELETE FROM videos WHERE id = 1;
 
--- TESTE 4: Procedimento correto de Soft Delete (DEVE EXECUTAR COM SUCESSO)
+-- TESTE 5: Fluxo correto de desativação lógica (DEVE EXECUTAR COM SUCESSO)
 -- UPDATE videos SET ativo = FALSE WHERE id = 1;
